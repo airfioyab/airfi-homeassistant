@@ -39,7 +39,7 @@ class RegisterStore:
             {1: 3, 2: 17, 3: 1, 4: 52, 5: 215, 6: 221, 7: 68, 21: 1450, 22: 1390,
              23: 45}
         )
-        self.holding_registers.update({1: 3, 5: 215, 8: 3, 12: 1})
+        self.holding_registers.update({1: 3, 5: 215, 8: 3, 12: 0})
 
 
 def _exception(transaction: int, unit: int, function: int, code: int) -> bytes:

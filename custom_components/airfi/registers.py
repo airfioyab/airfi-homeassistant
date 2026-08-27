@@ -52,6 +52,9 @@ class AirfiBinarySensorRegister:
     register_type: str = REG_INPUT
     # If not None, this is bit N within the register (for bitmask registers).
     bit: int | None = None
+    # True when the register's raw value is inverted relative to the
+    # entity's meaning (e.g. home/away: raw 0 = home = sensor on).
+    inverted: bool = False
     device_class: BinarySensorDeviceClass | None = None
     entity_category: EntityCategory | None = None
     enabled_by_default: bool = True
@@ -285,6 +288,8 @@ BINARY_SENSOR_REGISTERS: tuple[AirfiBinarySensorRegister, ...] = (
     ),
     AirfiBinarySensorRegister(
         address=16, key="home_away_state",
+        # Firmware: 0 = home, 1 = away (modbus-handler.cpp, input reg 16).
+        device_class=BinarySensorDeviceClass.PRESENCE, inverted=True,
         icon="mdi:home-account",
     ),
     AirfiBinarySensorRegister(
@@ -674,9 +679,10 @@ SELECT_REGISTERS: tuple[AirfiSelectRegister, ...] = (
     ),
     AirfiSelectRegister(
         address=12, key="home_away",
+        # Firmware: 0 = home, 1 = away (modbus-handler.cpp, holding reg 12).
         options=(
-            (0, "away"),
-            (1, "home"),
+            (0, "home"),
+            (1, "away"),
         ),
         icon="mdi:home-account",
     ),

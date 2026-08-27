@@ -49,5 +49,7 @@ class AirfiBinarySensor(AirfiEntity, BinarySensorEntity):
         if raw is None:
             return None
         if desc.bit is not None:
-            return bool(raw & (1 << desc.bit))
-        return raw != 0
+            value = bool(raw & (1 << desc.bit))
+        else:
+            value = raw != 0
+        return not value if desc.inverted else value

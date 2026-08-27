@@ -42,3 +42,20 @@ async def test_plain_and_bitmask_binary_sensors(
     assert (
         hass.states.get("binary_sensor.model_60_l_12345678_error_e2").state == "on"
     )
+
+
+async def test_home_away_state_inverted(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """Input register 16: 0 = home (sensor on), 1 = away (sensor off)."""
+    mock_modbus_client.read_all.return_value = make_data(input_overrides={16: 0})
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    state = hass.states.get("binary_sensor.model_60_l_12345678_home")
+    assert state is not None
+    assert state.state == "on"
+    assert state.attributes["device_class"] == "presence"

@@ -45,3 +45,28 @@ async def test_speed_select_read_and_write(
         blocking=True,
     )
     mock_modbus_client.write_register.assert_awaited_with(1, 5)
+
+
+async def test_home_away_mapping(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """Firmware semantics: 0 = home, 1 = away (modbus-handler.cpp case 12)."""
+    mock_modbus_client.read_all.return_value = make_data(holding_overrides={12: 0})
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    entity_id = "select.model_60_l_12345678_home_away"
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.state == "home"
+
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {"entity_id": entity_id, "option": "away"},
+        blocking=True,
+    )
+    mock_modbus_client.write_register.assert_awaited_with(12, 1)
