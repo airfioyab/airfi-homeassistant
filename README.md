@@ -28,9 +28,8 @@ The integration is not yet in the HACS default store. Once this repository
 has a public home you can add it in HACS as a *custom repository*
 (type: Integration) and install it from there.
 
-> The `documentation` and `codeowners` fields in `manifest.json`, and an
-> issue tracker link, will be filled in when the repository gets its public
-> home.
+> The `codeowners` field in `manifest.json`, and an issue tracker link, will
+> be filled in when the repository gets its public home.
 
 ## Configuration
 

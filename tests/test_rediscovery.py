@@ -1,10 +1,15 @@
 """Tests for automatic host updates from announcements."""
 
 from collections.abc import Callable
+from datetime import timedelta
 from unittest.mock import AsyncMock
 
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from homeassistant.util import dt as dt_util
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+)
 
 from custom_components.airfi.const import CONF_DEVICE_TYPE, CONF_SERIAL, DOMAIN
 from custom_components.airfi.discovery import DiscoveredDevice
@@ -69,3 +74,27 @@ async def test_manual_entry_upgraded_with_serial(
     assert entry.unique_id == "87654321"
     assert entry.data[CONF_SERIAL] == 87654321
     assert entry.data[CONF_DEVICE_TYPE] == 3
+
+
+async def test_listener_start_failure_retries_after_delay(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+    mock_discovery_listener: AsyncMock,
+) -> None:
+    """A failed listener start is non-fatal and retries once after 60 s."""
+    mock_discovery_listener.return_value.async_start.side_effect = [
+        OSError("address already in use"),
+        None,
+    ]
+
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert mock_discovery_listener.return_value.async_start.call_count == 1
+
+    async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=61))
+    await hass.async_block_till_done()
+
+    assert mock_discovery_listener.return_value.async_start.call_count == 2

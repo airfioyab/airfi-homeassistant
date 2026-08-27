@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.event import async_call_later
 
 from .const import CONF_DEVICE_TYPE, CONF_SERIAL, DOMAIN, LOGGER
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
 from .discovery import AirfiDiscoveryListener, DiscoveredDevice
+
+DISCOVERY_RETRY_DELAY = 60
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -55,6 +60,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirfiConfigEntry) -> bo
         )
         if listener is not None:
             listener.stop()
+        if (cancel_retry := data.pop("discovery_retry", None)) is not None:
+            cancel_retry()
     return unloaded
 
 
@@ -77,8 +84,34 @@ async def _async_ensure_discovery_listener(hass: HomeAssistant) -> None:
     except OSError as err:
         data.pop("discovery_listener", None)
         LOGGER.warning("Rediscovery listener could not start: %s", err)
+        _async_schedule_discovery_retry(hass)
         return
     data["discovery_listener"] = listener
+    # A retry may still be pending if this start was itself a retry attempt
+    # racing a concurrent one, or if the caller is the leader after a prior
+    # failure; either way a running listener means it is no longer needed.
+    if (cancel_retry := data.pop("discovery_retry", None)) is not None:
+        cancel_retry()
+
+
+@callback
+def _async_schedule_discovery_retry(hass: HomeAssistant) -> None:
+    """Schedule a single retry of the discovery listener after a failure.
+
+    Without this, a leader whose start fails leaves every loaded entry
+    stranded: the slot is popped so nothing looks "in flight", but no
+    loaded entry ever calls back in to retry until one of them reloads.
+    """
+    data = hass.data.setdefault(DOMAIN, {})
+    if (cancel_retry := data.pop("discovery_retry", None)) is not None:
+        cancel_retry()
+
+    async def _retry(_now: datetime) -> None:
+        hass.data.get(DOMAIN, {}).pop("discovery_retry", None)
+        if hass.config_entries.async_loaded_entries(DOMAIN):
+            await _async_ensure_discovery_listener(hass)
+
+    data["discovery_retry"] = async_call_later(hass, DISCOVERY_RETRY_DELAY, _retry)
 
 
 @callback

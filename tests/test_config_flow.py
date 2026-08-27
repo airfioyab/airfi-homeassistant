@@ -141,6 +141,33 @@ async def test_manual_flow_aborts_on_configured_host(hass: HomeAssistant) -> Non
     assert result["reason"] == "already_configured"
 
 
+async def test_manual_flow_same_host_different_port_not_aborted(
+    hass: HomeAssistant, mock_modbus_client: AsyncMock
+) -> None:
+    # Two simulators on the same host at different ports are distinct
+    # devices; the duplicate guard must key on (host, port), not host alone.
+    MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="10.0.0.9:5020",
+        data={"host": "10.0.0.9", "port": 5020},
+    ).add_to_hass(hass)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "user"}
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"next_step_id": "manual"}
+    )
+    with patch(
+        "custom_components.airfi.config_flow.AirfiModbusClient", autospec=True
+    ) as client_cls:
+        client_cls.return_value.read_input_register = AsyncMock(return_value=1)
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {"host": "10.0.0.9", "port": 5021}
+        )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["data"] == {"host": "10.0.0.9", "port": 5021}
+
+
 async def test_manual_flow(
     hass: HomeAssistant, mock_modbus_client: AsyncMock
 ) -> None:
