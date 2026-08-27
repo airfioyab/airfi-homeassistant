@@ -74,6 +74,11 @@ uv run python tools/simulator.py [--port 5020] [--serial 12345678] \
 Point a manual config entry at `localhost` with the chosen port to test the
 full integration against it.
 
+On macOS, multicast announcements require the terminal app to have **Local
+Network** permission (System Settings → Privacy & Security → Local Network);
+without it the send fails with `No route to host`. The simulator keeps
+retrying and the Modbus server works regardless — or use `--no-announce`.
+
 ## Development
 
 ```bash
