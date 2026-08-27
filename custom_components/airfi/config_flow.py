@@ -99,10 +99,14 @@ class AirfiConfigFlow(ConfigFlow, domain=DOMAIN):
             devices = []
 
         known_ids = self._async_current_ids(include_ignore=True)
+        known_hosts = {
+            entry.data.get(CONF_HOST)
+            for entry in self._async_current_entries(include_ignore=True)
+        }
         self._devices = {
             str(dev.serial): dev
             for dev in devices
-            if str(dev.serial) not in known_ids
+            if str(dev.serial) not in known_ids and dev.ip not in known_hosts
         }
         if not self._devices:
             return self.async_show_progress_done(next_step_id="manual")
@@ -152,6 +156,7 @@ class AirfiConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             host: str = user_input[CONF_HOST].strip()
             port: int = user_input.get(CONF_PORT, DEFAULT_PORT)
+            self._async_abort_entries_match({CONF_HOST: host})
             await self.async_set_unique_id(f"{host}:{port}")
             self._abort_if_unique_id_configured()
             error = await _validate_connection(host, port)

@@ -94,6 +94,53 @@ async def test_discovery_excludes_configured_serials(hass: HomeAssistant) -> Non
     assert result["step_id"] == "manual"
 
 
+async def test_discovery_excludes_configured_hosts(hass: HomeAssistant) -> None:
+    # Same host as DEVICE, but a different serial (e.g. a manual entry that
+    # was never upgraded): the device must still be excluded, by host.
+    MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="192.168.1.50:502",
+        data={"host": "192.168.1.50", "port": 502},
+    ).add_to_hass(hass)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "user"}
+    )
+    with patch(
+        "custom_components.airfi.config_flow.async_discover_devices",
+        AsyncMock(side_effect=_discover_soon),
+    ):
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {"next_step_id": "discover"}
+        )
+        while result["type"] is FlowResultType.SHOW_PROGRESS:
+            await hass.async_block_till_done()
+            result = await hass.config_entries.flow.async_configure(
+                result["flow_id"]
+            )
+    # Only device's host already configured → falls through to manual entry.
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "manual"
+
+
+async def test_manual_flow_aborts_on_configured_host(hass: HomeAssistant) -> None:
+    MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="12345678",
+        data={"host": "10.0.0.9", "port": 502},
+    ).add_to_hass(hass)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "user"}
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"next_step_id": "manual"}
+    )
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {"host": "10.0.0.9", "port": 502}
+    )
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
+
+
 async def test_manual_flow(
     hass: HomeAssistant, mock_modbus_client: AsyncMock
 ) -> None:
