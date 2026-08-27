@@ -21,6 +21,15 @@ def auto_enable_custom_integrations(enable_custom_integrations: None) -> None:
     """Enable loading custom integrations in all tests."""
 
 
+@pytest.fixture(autouse=True)
+def mock_discovery_listener() -> Generator[AsyncMock]:
+    """Prevent real multicast sockets in tests; capture the callback."""
+    with patch(
+        "custom_components.airfi.AirfiDiscoveryListener", autospec=True
+    ) as listener_cls:
+        yield listener_cls
+
+
 def make_data(
     input_overrides: dict[int, int] | None = None,
     holding_overrides: dict[int, int] | None = None,
