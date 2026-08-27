@@ -83,17 +83,21 @@ class AirfiDiscoveryListener:
     async def async_start(self) -> None:
         """Open the multicast socket and start listening.
 
-        Raises OSError if the socket cannot be created (e.g. port in use
-        without SO_REUSEADDR support, or no network).
+        Raises OSError if the multicast socket cannot be created, bound, or
+        joined to the group.
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind(("", MULTICAST_PORT))
-        mreq = struct.pack(
-            "4sL", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY
-        )
-        sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-        sock.setblocking(False)
+        try:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind(("", MULTICAST_PORT))
+            mreq = struct.pack(
+                "4sL", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY
+            )
+            sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+            sock.setblocking(False)
+        except OSError:
+            sock.close()
+            raise
 
         loop = asyncio.get_running_loop()
         self._transport, _ = await loop.create_datagram_endpoint(
