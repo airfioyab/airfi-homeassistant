@@ -81,12 +81,12 @@ retrying and the Modbus server works regardless — or use `--no-announce`.
 
 ## Branding
 
-`brands/airfi/` holds the integration icon (`icon.png` 256×256,
-`icon@2x.png` 512×512, from the Airfi app logo). Home Assistant loads
-integration icons from its central [brands repository](https://github.com/home-assistant/brands),
-not from the integration itself — to make the icon appear, submit these two
-files in a PR to that repo under `custom_integrations/airfi/`. Until that PR
-is merged, HA shows a generic placeholder.
+`custom_components/airfi/brand/` holds the integration icon (`icon.png`
+256×256, `icon@2x.png` 512×512, from the Airfi app logo). Home Assistant
+2026.3 and newer serves brand images bundled in the integration directory
+directly, taking priority over the central brands CDN — no submission to
+the [brands repository](https://github.com/home-assistant/brands) is needed
+(though one would make the icon visible on older HA versions too).
 
 ## Development
 
