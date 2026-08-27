@@ -50,7 +50,7 @@ async def test_device_info(
     coordinator = AirfiCoordinator(hass, config_entry)
     await coordinator.async_refresh()
     info = coordinator.device_info
-    assert info["identifiers"] == {(DOMAIN, "12345678")}
+    assert info["identifiers"] == {(DOMAIN, config_entry.entry_id)}
     assert info["manufacturer"] == "Airfi"
     assert info["model"] == "Model 60 L"
     assert info["hw_version"] == "3"

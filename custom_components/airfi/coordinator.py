@@ -62,9 +62,10 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
             sw_version = self.data[REG_INPUT].get(2)
         device_type = self.config_entry.data.get(CONF_DEVICE_TYPE)
         return DeviceInfo(
-            identifiers={
-                (DOMAIN, self.config_entry.unique_id or self.config_entry.entry_id)
-            },
+            # The config-entry unique_id is reserved for duplicate detection
+            # and may change (manual->serial upgrade); registry identity must
+            # use the immutable entry_id.
+            identifiers={(DOMAIN, self.config_entry.entry_id)},
             name=self.config_entry.title,
             manufacturer="Airfi",
             model=model_name(device_type) if device_type is not None else None,

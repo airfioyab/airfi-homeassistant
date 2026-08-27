@@ -24,8 +24,10 @@ class AirfiEntity(CoordinatorEntity[AirfiCoordinator]):
         """Initialize from a register descriptor's common fields."""
         super().__init__(coordinator)
         entry = coordinator.config_entry
-        base = entry.unique_id or entry.entry_id
-        self._attr_unique_id = f"{base}_{key}"
+        # The config-entry unique_id is reserved for duplicate detection and
+        # may change (manual->serial upgrade); registry identity must use the
+        # immutable entry_id.
+        self._attr_unique_id = f"{entry.entry_id}_{key}"
         self._attr_translation_key = key
         self._attr_device_info = coordinator.device_info
         self._attr_entity_category = entity_category

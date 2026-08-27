@@ -128,9 +128,11 @@ retries. Failed writes raise `HomeAssistantError` so the UI shows the error.
 
 ## Device registry
 
-`identifiers = {(DOMAIN, serial)}` (entry_id for manual entries without serial),
-manufacturer "Airfi", model from the device-type map, hw/sw versions from input
-registers 1–2, `configuration_url` = `http://<host>`.
+`identifiers = {(DOMAIN, entry_id)}` — the immutable config-entry id, because
+the config-entry unique_id (the serial, or "host:port" for manual entries) is
+reserved for duplicate detection and rediscovery and may change on the
+manual→serial upgrade. Manufacturer "Airfi", model from the device-type map,
+hw/sw versions from input registers 1–2, `configuration_url` = `http://<host>`.
 
 ## Simulator and testing
 
