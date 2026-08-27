@@ -33,9 +33,11 @@ the end of this document.
 - **Modbus TCP** is on fixed port **502** (`functions/modbus/modbus-tcp.cpp`).
 - At most **20 registers per read**; larger reads return a Modbus error.
 - Only **one Modbus TCP client** may be connected at a time.
-- Device type ID maps to the `DeviceType` enum in `resources/constants.h`
-  (0=Proto, 1=60L … 38=350EntRWater) → human-readable model names such as
-  "Model 60 L", "C5 R Water", "53 mini Ent L".
+- Device type ID maps to human-readable model names; the canonical map is
+  `FanData.models` in `tools/fan_data.py` (0="Proto", 1="Model 60 L" …
+  38="Model 350 Ent R Water"), matching the `DeviceType` enum in
+  `resources/constants.h`. The integration copies this map verbatim into
+  `const.py`; unknown IDs fall back to "Airfi unit (type <id>)".
 - Input registers 1–49 (register 10 unused), holding registers 1–68, all 16-bit.
   Spec register numbers are 1-based; pymodbus addressing is 0-based, so the wire
   address is `register - 1` (verify against `modbus-handler.cpp` during
