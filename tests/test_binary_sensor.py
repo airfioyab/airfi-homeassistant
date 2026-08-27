@@ -1,10 +1,8 @@
 """Tests for the binary sensor platform.
 
-See tests/test_sensor.py's module docstring for why entity ids here are
-generic slugs rather than per-key names: with no strings.json yet, HA never
-reaches translation_key-based naming for these platforms, so device-class
-binary sensors collide onto one generic name each ("Problem", "Running", ...)
-and non-device-class ones (like fireplace_active) get no name at all.
+See tests/test_sensor.py's module docstring: entity ids here are derived
+from the English entity names in
+``custom_components/airfi/translations/en.json``.
 """
 
 from unittest.mock import AsyncMock
@@ -27,20 +25,20 @@ async def test_plain_and_bitmask_binary_sensors(
     assert await hass.config_entries.async_setup(config_entry.entry_id)
     await hass.async_block_till_done()
 
-    # fireplace_active (address 15): no device class, first nameless binary
-    # sensor in BINARY_SENSOR_REGISTERS order, so it gets the bare device slug.
-    assert hass.states.get("binary_sensor.model_60_l_12345678").state == "on"
-    # error_e0/e1/e2 (address 32, bits 0-2): all device_class PROBLEM, so all
-    # collide onto the generic "Problem" name; these are the 6th-8th such
-    # entities registered (after emergency_stop, machine_fault,
-    # constant_pressure_supply_alarm, constant_pressure_exhaust_alarm,
-    # filter_guard_alarm).
+    # fireplace_active (address 15): "Fireplace mode active"
     assert (
-        hass.states.get("binary_sensor.model_60_l_12345678_problem_6").state == "on"
+        hass.states.get(
+            "binary_sensor.model_60_l_12345678_fireplace_mode_active"
+        ).state
+        == "on"
+    )
+    # error_e0/e1/e2 (address 32, bits 0-2): "Error E0"/"Error E1"/"Error E2"
+    assert (
+        hass.states.get("binary_sensor.model_60_l_12345678_error_e0").state == "on"
     )
     assert (
-        hass.states.get("binary_sensor.model_60_l_12345678_problem_7").state == "off"
+        hass.states.get("binary_sensor.model_60_l_12345678_error_e1").state == "off"
     )
     assert (
-        hass.states.get("binary_sensor.model_60_l_12345678_problem_8").state == "on"
+        hass.states.get("binary_sensor.model_60_l_12345678_error_e2").state == "on"
     )

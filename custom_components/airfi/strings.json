@@ -1,0 +1,475 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Airfi device",
+        "menu_options": {
+          "discover": "Search the network automatically",
+          "manual": "Enter address manually"
+        }
+      },
+      "select_device": {
+        "title": "Select device",
+        "data": {
+          "device": "Discovered devices"
+        }
+      },
+      "manual": {
+        "title": "Manual connection",
+        "data": {
+          "host": "IP address",
+          "port": "Port"
+        }
+      }
+    },
+    "progress": {
+      "discovering": "Listening for Airfi devices…"
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the device",
+      "modbus_error": "The device rejected the Modbus request"
+    },
+    "abort": {
+      "already_configured": "This device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Airfi options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "hardware_version": {
+        "name": "Hardware version"
+      },
+      "software_version": {
+        "name": "Software version"
+      },
+      "modbus_register_version": {
+        "name": "Modbus register version"
+      },
+      "outdoor_air_temperature": {
+        "name": "Outdoor air temperature (T1)"
+      },
+      "supply_air_temperature": {
+        "name": "Supply air temperature (T2)"
+      },
+      "exhaust_air_temperature": {
+        "name": "Extract air temperature (T3)"
+      },
+      "waste_air_temperature": {
+        "name": "Waste air temperature (T4)"
+      },
+      "supply_air_apartment_temperature": {
+        "name": "Supply to apartment temperature (T5)"
+      },
+      "freeze_protection_temperature": {
+        "name": "Freeze protection temperature (T6)"
+      },
+      "exhaust_fan_speed": {
+        "name": "Extract fan speed"
+      },
+      "supply_fan_speed": {
+        "name": "Supply fan speed"
+      },
+      "supply_fan_rpm": {
+        "name": "Supply fan RPM"
+      },
+      "exhaust_fan_rpm": {
+        "name": "Extract fan RPM"
+      },
+      "fan_speed_output": {
+        "name": "Fan speed output"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "force_control_state": {
+        "name": "Force control state"
+      },
+      "direct_control_percentage": {
+        "name": "Direct control"
+      },
+      "temperature_setpoint_readback": {
+        "name": "Temperature setpoint (device)"
+      },
+      "aux3_setpoint_readback": {
+        "name": "AUX3 setpoint (device)"
+      },
+      "aux4_setpoint_readback": {
+        "name": "AUX4 setpoint (device)"
+      },
+      "filter_change_interval_readback": {
+        "name": "Filter change interval (device)"
+      },
+      "aux3_mode": {
+        "name": "AUX3 mode"
+      },
+      "aux4_mode": {
+        "name": "AUX4 mode"
+      },
+      "aux3_read_value": {
+        "name": "AUX3 value"
+      },
+      "aux4_read_value": {
+        "name": "AUX4 value"
+      },
+      "aux2_state": {
+        "name": "AUX2 state"
+      },
+      "intake_pressure": {
+        "name": "Intake pressure"
+      },
+      "exhaust_pressure": {
+        "name": "Extract pressure"
+      },
+      "range_hood_compensation": {
+        "name": "Range hood compensation"
+      },
+      "s1_read_value": {
+        "name": "S1 value"
+      },
+      "room_sensor": {
+        "name": "Room temperature"
+      },
+      "post_heat_valve": {
+        "name": "Post-heating valve"
+      },
+      "outlet_valve_control_status": {
+        "name": "Outlet valve control status"
+      }
+    },
+    "binary_sensor": {
+      "fireplace_active": {
+        "name": "Fireplace mode active"
+      },
+      "home_away_state": {
+        "name": "Home"
+      },
+      "emergency_stop": {
+        "name": "Emergency stop"
+      },
+      "freeze_alarm": {
+        "name": "Freeze risk alarm"
+      },
+      "machine_fault": {
+        "name": "Machine fault"
+      },
+      "direct_control_active": {
+        "name": "Direct control active"
+      },
+      "constant_pressure_supply_alarm": {
+        "name": "Constant pressure supply alarm"
+      },
+      "constant_pressure_exhaust_alarm": {
+        "name": "Constant pressure extract alarm"
+      },
+      "filter_guard_alarm": {
+        "name": "Filter guard alarm"
+      },
+      "fire_alarm": {
+        "name": "Fire alarm"
+      },
+      "defrost_active": {
+        "name": "Defrost active"
+      },
+      "aux1_status": {
+        "name": "AUX1 status"
+      },
+      "bypass_active": {
+        "name": "Bypass active"
+      },
+      "error_e0": {
+        "name": "Error E0"
+      },
+      "error_e1": {
+        "name": "Error E1"
+      },
+      "error_e2": {
+        "name": "Error E2"
+      },
+      "error_e3": {
+        "name": "Error E3"
+      },
+      "error_e4": {
+        "name": "Error E4"
+      },
+      "error_e5": {
+        "name": "Error E5"
+      },
+      "error_e6": {
+        "name": "Error E6"
+      },
+      "error_e7": {
+        "name": "Error E7"
+      },
+      "error_e8": {
+        "name": "Error E8"
+      }
+    },
+    "number": {
+      "temperature_setpoint": {
+        "name": "Temperature setpoint"
+      },
+      "away_temperature_setpoint": {
+        "name": "Away temperature setpoint"
+      },
+      "direct_control_percentage": {
+        "name": "Direct control"
+      },
+      "supply_fan_direct_control": {
+        "name": "Supply fan direct control"
+      },
+      "exhaust_fan_direct_control": {
+        "name": "Extract fan direct control"
+      },
+      "boost_time": {
+        "name": "Boost time"
+      },
+      "boost_speed_addition": {
+        "name": "Boost speed addition"
+      },
+      "aux3_setpoint": {
+        "name": "AUX3 setpoint"
+      },
+      "aux4_setpoint": {
+        "name": "AUX4 setpoint"
+      },
+      "cp_supply_speed1_setpoint": {
+        "name": "Constant pressure supply setpoint 1"
+      },
+      "cp_supply_speed2_setpoint": {
+        "name": "Constant pressure supply setpoint 2"
+      },
+      "cp_supply_speed3_setpoint": {
+        "name": "Constant pressure supply setpoint 3"
+      },
+      "cp_supply_speed4_setpoint": {
+        "name": "Constant pressure supply setpoint 4"
+      },
+      "cp_supply_speed5_setpoint": {
+        "name": "Constant pressure supply setpoint 5"
+      },
+      "cp_exhaust_speed1_setpoint": {
+        "name": "Constant pressure extract setpoint 1"
+      },
+      "cp_exhaust_speed2_setpoint": {
+        "name": "Constant pressure extract setpoint 2"
+      },
+      "cp_exhaust_speed3_setpoint": {
+        "name": "Constant pressure extract setpoint 3"
+      },
+      "cp_exhaust_speed4_setpoint": {
+        "name": "Constant pressure extract setpoint 4"
+      },
+      "cp_exhaust_speed5_setpoint": {
+        "name": "Constant pressure extract setpoint 5"
+      },
+      "cp_deviation_setpoint": {
+        "name": "Constant pressure deviation"
+      },
+      "filter_guard_supply_ref": {
+        "name": "Filter guard supply reference"
+      },
+      "filter_guard_exhaust_ref": {
+        "name": "Filter guard extract reference"
+      },
+      "transmitter_coefficient": {
+        "name": "Transmitter control coefficient"
+      },
+      "transmitter_deviation": {
+        "name": "Transmitter deviation"
+      },
+      "fire_hazard_supply_temp_limit": {
+        "name": "Fire hazard supply temperature limit"
+      },
+      "fire_hazard_exhaust_temp_limit": {
+        "name": "Fire hazard extract temperature limit"
+      },
+      "post_ventilation_time": {
+        "name": "Post-ventilation time"
+      },
+      "supply_fan_speed1_pct": {
+        "name": "Supply fan speed 1"
+      },
+      "supply_fan_speed2_pct": {
+        "name": "Supply fan speed 2"
+      },
+      "supply_fan_speed3_pct": {
+        "name": "Supply fan speed 3"
+      },
+      "supply_fan_speed4_pct": {
+        "name": "Supply fan speed 4"
+      },
+      "supply_fan_speed5_pct": {
+        "name": "Supply fan speed 5"
+      },
+      "exhaust_fan_speed1_pct": {
+        "name": "Extract fan speed 1"
+      },
+      "exhaust_fan_speed2_pct": {
+        "name": "Extract fan speed 2"
+      },
+      "exhaust_fan_speed3_pct": {
+        "name": "Extract fan speed 3"
+      },
+      "exhaust_fan_speed4_pct": {
+        "name": "Extract fan speed 4"
+      },
+      "exhaust_fan_speed5_pct": {
+        "name": "Extract fan speed 5"
+      },
+      "supply_fan_correction": {
+        "name": "Supply fan correction"
+      },
+      "bypass_set_temperature": {
+        "name": "Bypass set temperature"
+      },
+      "bypass_lower_limit": {
+        "name": "Bypass lower limit"
+      },
+      "bypass_delay": {
+        "name": "Bypass delay"
+      },
+      "supply_air_minimum_temperature": {
+        "name": "Supply air minimum temperature"
+      },
+      "cooling_temp_limit": {
+        "name": "Cooling temperature limit"
+      },
+      "pre_heating_temp_limit": {
+        "name": "Pre-heating temperature limit"
+      },
+      "co2_setpoint": {
+        "name": "CO2 setpoint"
+      },
+      "modbus_rh_sensor": {
+        "name": "External RH sensor (Modbus)"
+      },
+      "modbus_co2_sensor": {
+        "name": "External CO2 sensor (Modbus)"
+      },
+      "modbus_temperature_sensor": {
+        "name": "External temperature sensor (Modbus)"
+      }
+    },
+    "select": {
+      "speed": {
+        "name": "Fan speed",
+        "state": {
+          "off": "Off",
+          "speed_1": "Speed 1",
+          "speed_2": "Speed 2",
+          "speed_3": "Speed 3",
+          "speed_4": "Speed 4",
+          "speed_5": "Speed 5"
+        }
+      },
+      "force_control": {
+        "name": "Force control",
+        "state": {
+          "disabled": "Disabled",
+          "mode_1": "Mode 1",
+          "mode_2": "Mode 2",
+          "mode_3": "Mode 3"
+        }
+      },
+      "filter_change_interval": {
+        "name": "Filter change interval",
+        "state": {
+          "1_month": "1 month",
+          "2_months": "2 months",
+          "3_months": "3 months",
+          "4_months": "4 months",
+          "5_months": "5 months",
+          "6_months": "6 months"
+        }
+      },
+      "constant_pressure_state": {
+        "name": "Constant pressure mode",
+        "state": {
+          "off": "Off",
+          "supply_only": "Supply only",
+          "supply_and_exhaust": "Supply and extract"
+        }
+      },
+      "home_away": {
+        "name": "Home/away",
+        "state": {
+          "away": "Away",
+          "home": "Home"
+        }
+      },
+      "filter_guard_state": {
+        "name": "Filter guard mode",
+        "state": {
+          "off": "Off",
+          "supply_only": "Supply only",
+          "supply_and_exhaust": "Supply and extract"
+        }
+      },
+      "rh_sensor_mode": {
+        "name": "Internal RH sensor mode",
+        "state": {
+          "off": "Off",
+          "mode_1": "Mode 1",
+          "mode_2": "Mode 2"
+        }
+      },
+      "boost_block": {
+        "name": "Boost block",
+        "state": {
+          "none": "None",
+          "block_1": "Block 1",
+          "block_2": "Block 2",
+          "block_3": "Block 3",
+          "block_4": "Block 4"
+        }
+      }
+    },
+    "switch": {
+      "direct_control_enabled": {
+        "name": "Direct control enabled"
+      },
+      "emergency_stop_resume": {
+        "name": "Emergency stop manual resume"
+      },
+      "buzzer_mute": {
+        "name": "Buzzer mute"
+      },
+      "filter_change_reminder": {
+        "name": "Filter change reminder"
+      },
+      "separate_supply_fan_values": {
+        "name": "Separate supply fan values"
+      },
+      "enhanced_cooling_allowed": {
+        "name": "Enhanced cooling allowed"
+      },
+      "outdoor_valve_manual": {
+        "name": "Outdoor valve manual state"
+      },
+      "sauna_mode": {
+        "name": "Sauna mode"
+      },
+      "fireplace_mode": {
+        "name": "Fireplace mode"
+      },
+      "heat_exchanger_disable": {
+        "name": "Rotary heat exchanger disable"
+      },
+      "internal_co2_enabled": {
+        "name": "Internal CO2 sensor enabled"
+      },
+      "aux1_control": {
+        "name": "AUX1 control"
+      }
+    }
+  }
+}
