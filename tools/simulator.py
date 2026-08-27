@@ -122,8 +122,24 @@ async def announce_loop(port: int, serial: int, device_type: int) -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
     packet = struct.pack("<IHIBI", 0, 4000, serial, 1, device_type)
+    sending = True
     while True:
-        sock.sendto(packet, (MULTICAST_GROUP, MULTICAST_PORT))
+        # No route to the multicast group (VPN, no network, macOS Local
+        # Network permission) must not kill the loop — keep retrying so
+        # announcements resume when the network allows them again.
+        try:
+            sock.sendto(packet, (MULTICAST_GROUP, MULTICAST_PORT))
+            if not sending:
+                print("Announcements resumed")
+                sending = True
+        except OSError as err:
+            if sending:
+                print(
+                    f"Announcement send failed ({err}); will keep retrying. "
+                    "Use --no-announce to silence, or check VPN/Local Network "
+                    "permission. Manual entry still works without announcements."
+                )
+                sending = False
         await asyncio.sleep(2)
 
 
@@ -139,12 +155,18 @@ async def main() -> None:
     server = ModbusServer(store)
     tcp = await asyncio.start_server(server.handle, "0.0.0.0", args.port)
     print(f"Modbus TCP on port {args.port}; serial {args.serial}")
+    announce_task: asyncio.Task[None] | None = None
     if not args.no_announce:
-        asyncio.ensure_future(
+        # Hold a reference so the task cannot be garbage-collected mid-run.
+        announce_task = asyncio.ensure_future(
             announce_loop(args.port, args.serial, args.device_type)
         )
-    async with tcp:
-        await tcp.serve_forever()
+    try:
+        async with tcp:
+            await tcp.serve_forever()
+    finally:
+        if announce_task is not None:
+            announce_task.cancel()
 
 
 if __name__ == "__main__":
