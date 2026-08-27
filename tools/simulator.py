@@ -65,7 +65,9 @@ def build_response(store: RegisterStore, request: bytes) -> bytes:
             else store.input_registers
         )
         try:
-            values = [table[address + 1 + i] for i in range(count)]
+            # Airfi firmware quirk: the wire address IS the 1-based register
+            # number (no Modbus-standard -1 offset); address 0 is invalid.
+            values = [table[address + i] for i in range(count)]
         except KeyError:
             return _exception(
                 transaction, unit, function, EXC_ILLEGAL_DATA_ADDRESS
@@ -76,11 +78,11 @@ def build_response(store: RegisterStore, request: bytes) -> bytes:
         return struct.pack(">HHHB", transaction, 0, len(pdu) + 1, unit) + pdu
     if function == WRITE_SINGLE:
         address, value = struct.unpack(">HH", body[:4])
-        if address + 1 not in store.holding_registers:
+        if address not in store.holding_registers:
             return _exception(
                 transaction, unit, function, EXC_ILLEGAL_DATA_ADDRESS
             )
-        store.holding_registers[address + 1] = value
+        store.holding_registers[address] = value
         pdu = struct.pack(">BHH", function, address, value)
         return struct.pack(">HHHB", transaction, 0, len(pdu) + 1, unit) + pdu
     return _exception(transaction, unit, function, EXC_ILLEGAL_FUNCTION)

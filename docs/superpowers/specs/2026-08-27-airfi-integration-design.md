@@ -39,9 +39,12 @@ the end of this document.
   `resources/constants.h`. The integration copies this map verbatim into
   `const.py`; unknown IDs fall back to "Airfi unit (type <id>)".
 - Input registers 1–49 (register 10 unused), holding registers 1–68, all 16-bit.
-  Spec register numbers are 1-based; pymodbus addressing is 0-based, so the wire
-  address is `register - 1` (verify against `modbus-handler.cpp` during
-  implementation).
+  **Addressing quirk (verified against `modbus-handler.cpp` on real hardware
+  2026-08-27):** the firmware deviates from the Modbus convention — the wire
+  address IS the 1-based register number directly (no −1 offset; wire address
+  0 returns IllegalDataAddress). Newer firmware also serves input register 50
+  (CO2 ppm) and silently truncates reads above 30 registers instead of
+  erroring.
 
 ## Architecture
 

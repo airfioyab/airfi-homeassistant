@@ -18,7 +18,7 @@ def test_read_input_registers() -> None:
     # MBAP header is 7 bytes (transaction, protocol, length, unit); the PDU
     # follows: response[7] = function echo, response[8] = byte count,
     # response[9:] = register values, each big-endian uint16.
-    response = build_response(store, _request(4, 3, 3))  # regs 4-6 (0-based 3)
+    response = build_response(store, _request(4, 4, 3))  # regs 4-6 (direct addressing)
     assert response[7] == 4  # function echo (READ_INPUT)
     assert response[8] == 6  # byte count = 3 registers * 2 bytes
     values = struct.unpack(">HHH", response[9:15])
@@ -27,14 +27,14 @@ def test_read_input_registers() -> None:
 
 def test_read_more_than_20_registers_is_error() -> None:
     store = RegisterStore()
-    response = build_response(store, _request(4, 0, 21))
+    response = build_response(store, _request(4, 1, 21))
     assert response[7] == 0x84  # function | 0x80 -> exception
     assert response[8] == 0x02  # illegal data address
 
 
 def test_write_single_register() -> None:
     store = RegisterStore()
-    response = build_response(store, _request(6, 4, 999))  # holding reg 5
+    response = build_response(store, _request(6, 5, 999))  # holding reg 5
     assert store.holding_registers[5] == 999
     # Echo response
-    assert response[7:] == struct.pack(">BHH", 6, 4, 999)[0:]
+    assert response[7:] == struct.pack(">BHH", 6, 5, 999)[0:]

@@ -63,8 +63,13 @@ class AirfiModbusClient:
         start: int,
         count: int,
     ) -> dict[int, int]:
-        """Read one batch; returns {1-based address: raw value}."""
-        result = await read(address=start - 1, count=count)
+        """Read one batch; returns {1-based address: raw value}.
+
+        The Airfi firmware deviates from the Modbus convention: the wire
+        address IS the 1-based register number (verified against
+        modbus-handler.cpp; address 0 is rejected as IllegalDataAddress).
+        """
+        result = await read(address=start, count=count)
         if result.isError():
             raise AirfiModbusError(
                 f"Modbus error reading registers {start}-{start + count - 1}: {result}"
@@ -115,7 +120,7 @@ class AirfiModbusClient:
             await self._connect()
             try:
                 result = await self._client.write_register(
-                    address=address - 1, value=value
+                    address=address, value=value
                 )
                 if result.isError():
                     raise AirfiModbusError(
