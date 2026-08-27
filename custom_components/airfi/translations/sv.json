@@ -375,28 +375,19 @@
         "name": "Tvångsstyrning",
         "state": {
           "disabled": "Av",
-          "mode_1": "Läge 1",
-          "mode_2": "Läge 2",
-          "mode_3": "Läge 3"
+          "emergency_stop": "Nödstopp",
+          "away": "Borta"
         }
       },
       "filter_change_interval": {
         "name": "Filterbytesintervall",
         "state": {
-          "1_month": "1 månad",
-          "2_months": "2 månader",
-          "3_months": "3 månader",
-          "4_months": "4 månader",
-          "5_months": "5 månader",
-          "6_months": "6 månader"
-        }
-      },
-      "constant_pressure_state": {
-        "name": "Konstanttrycksläge",
-        "state": {
-          "off": "Av",
-          "supply_only": "Endast tilluft",
-          "supply_and_exhaust": "Tilluft och frånluft"
+          "1_per_year": "1 gång/år",
+          "2_per_year": "2 gånger/år",
+          "3_per_year": "3 gånger/år",
+          "4_per_year": "4 gånger/år",
+          "5_per_year": "5 gånger/år",
+          "6_per_year": "6 gånger/år"
         }
       },
       "home_away": {
@@ -410,26 +401,34 @@
         "name": "Filtervaktsläge",
         "state": {
           "off": "Av",
-          "supply_only": "Endast tilluft",
-          "supply_and_exhaust": "Tilluft och frånluft"
+          "on": "På",
+          "calibrate": "På + kalibrering"
         }
       },
       "rh_sensor_mode": {
         "name": "Internt fuktsensorläge",
         "state": {
-          "off": "Av",
-          "mode_1": "Läge 1",
-          "mode_2": "Läge 2"
+          "switch": "Brytarläge",
+          "transmitter": "Sändarläge",
+          "disabled": "Inaktiverad"
         }
       },
       "boost_block": {
         "name": "Boost-blockering",
         "state": {
-          "none": "Ingen",
-          "block_1": "Blockering 1",
-          "block_2": "Blockering 2",
-          "block_3": "Blockering 3",
-          "block_4": "Blockering 4"
+          "off": "Av",
+          "humidity": "Fukt",
+          "co2": "CO2",
+          "humidity_co2": "Fukt och CO2",
+          "all": "Alla"
+        }
+      },
+      "bypass_mode": {
+        "name": "Förbigångsläge",
+        "state": {
+          "off": "Av",
+          "on_speeds_1_2": "På (hastighet 1–2)",
+          "on_speeds_1_5": "På (hastighet 1–5)"
         }
       }
     },

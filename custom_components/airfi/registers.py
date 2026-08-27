@@ -645,37 +645,42 @@ SELECT_REGISTERS: tuple[AirfiSelectRegister, ...] = (
     ),
     AirfiSelectRegister(
         address=2, key="force_control",
+        # Firmware (modbus-handler.cpp case 2): 0 = off, 1 = emergency
+        # stop, 2 = away; there is no mode 3.
         options=(
             (0, "disabled"),
-            (1, "mode_1"),
-            (2, "mode_2"),
-            (3, "mode_3"),
+            (1, "emergency_stop"),
+            (2, "away"),
         ),
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
         icon="mdi:tune",
     ),
     AirfiSelectRegister(
         address=8, key="filter_change_interval",
+        # Firmware: filter reminders per YEAR, 1-6 (input reg 31 comment
+        # "muistutuskerrat per vuosi"), not an interval in months.
         options=(
-            (1, "1_month"),
-            (2, "2_months"),
-            (3, "3_months"),
-            (4, "4_months"),
-            (5, "5_months"),
-            (6, "6_months"),
+            (1, "1_per_year"),
+            (2, "2_per_year"),
+            (3, "3_per_year"),
+            (4, "4_per_year"),
+            (5, "5_per_year"),
+            (6, "6_per_year"),
         ),
         entity_category=EntityCategory.CONFIG,
         icon="mdi:air-filter",
     ),
     AirfiSelectRegister(
-        address=9, key="constant_pressure_state",
+        address=9, key="bypass_mode",
+        # Firmware (case 9, "LTO-kennon ohitus"): heat-recovery cell
+        # bypass, not constant pressure as the spec table suggested.
         options=(
             (0, "off"),
-            (1, "supply_only"),
-            (2, "supply_and_exhaust"),
+            (1, "on_speeds_1_2"),
+            (2, "on_speeds_1_5"),
         ),
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
-        icon="mdi:gauge",
+        icon="mdi:valve",
     ),
     AirfiSelectRegister(
         address=12, key="home_away",
@@ -688,32 +693,36 @@ SELECT_REGISTERS: tuple[AirfiSelectRegister, ...] = (
     ),
     AirfiSelectRegister(
         address=24, key="filter_guard_state",
+        # Firmware (case 24): 0 = off, 1 = on, 2 = on + calibrate.
         options=(
             (0, "off"),
-            (1, "supply_only"),
-            (2, "supply_and_exhaust"),
+            (1, "on"),
+            (2, "calibrate"),
         ),
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
         icon="mdi:air-filter",
     ),
     AirfiSelectRegister(
         address=56, key="rh_sensor_mode",
+        # Firmware (case 56): 0 = switch mode, 1 = transmitter mode,
+        # 2 = disabled.
         options=(
-            (0, "off"),
-            (1, "mode_1"),
-            (2, "mode_2"),
+            (0, "switch"),
+            (1, "transmitter"),
+            (2, "disabled"),
         ),
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
         icon="mdi:water-percent",
     ),
     AirfiSelectRegister(
         address=64, key="boost_block",
+        # Firmware (case 64): which boost sources are blocked.
         options=(
-            (0, "none"),
-            (1, "block_1"),
-            (2, "block_2"),
-            (3, "block_3"),
-            (4, "block_4"),
+            (0, "off"),
+            (1, "humidity"),
+            (2, "co2"),
+            (3, "humidity_co2"),
+            (4, "all"),
         ),
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
         icon="mdi:fan-plus",

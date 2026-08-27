@@ -375,28 +375,19 @@
         "name": "Pakko-ohjaus",
         "state": {
           "disabled": "Pois",
-          "mode_1": "Tila 1",
-          "mode_2": "Tila 2",
-          "mode_3": "Tila 3"
+          "emergency_stop": "Hätäseis",
+          "away": "Poissa"
         }
       },
       "filter_change_interval": {
         "name": "Suodattimen vaihtoväli",
         "state": {
-          "1_month": "1 kuukausi",
-          "2_months": "2 kuukautta",
-          "3_months": "3 kuukautta",
-          "4_months": "4 kuukautta",
-          "5_months": "5 kuukautta",
-          "6_months": "6 kuukautta"
-        }
-      },
-      "constant_pressure_state": {
-        "name": "Vakiopainesäätö",
-        "state": {
-          "off": "Pois",
-          "supply_only": "Vain tulo",
-          "supply_and_exhaust": "Tulo ja poisto"
+          "1_per_year": "1 krt/vuosi",
+          "2_per_year": "2 krt/vuosi",
+          "3_per_year": "3 krt/vuosi",
+          "4_per_year": "4 krt/vuosi",
+          "5_per_year": "5 krt/vuosi",
+          "6_per_year": "6 krt/vuosi"
         }
       },
       "home_away": {
@@ -410,26 +401,34 @@
         "name": "Suodatinvahdin tila",
         "state": {
           "off": "Pois",
-          "supply_only": "Vain tulo",
-          "supply_and_exhaust": "Tulo ja poisto"
+          "on": "Päällä",
+          "calibrate": "Päällä + kalibrointi"
         }
       },
       "rh_sensor_mode": {
         "name": "Sisäisen kosteusanturin tila",
         "state": {
-          "off": "Pois",
-          "mode_1": "Tila 1",
-          "mode_2": "Tila 2"
+          "switch": "Kytkin",
+          "transmitter": "Lähetin",
+          "disabled": "Pois käytöstä"
         }
       },
       "boost_block": {
         "name": "Tehostuksen esto",
         "state": {
-          "none": "Ei estoa",
-          "block_1": "Esto 1",
-          "block_2": "Esto 2",
-          "block_3": "Esto 3",
-          "block_4": "Esto 4"
+          "off": "Pois",
+          "humidity": "Kosteus",
+          "co2": "CO2",
+          "humidity_co2": "Kosteus ja CO2",
+          "all": "Kaikki"
+        }
+      },
+      "bypass_mode": {
+        "name": "LTO-kennon ohitus",
+        "state": {
+          "off": "Pois",
+          "on_speeds_1_2": "Päällä (nopeudet 1–2)",
+          "on_speeds_1_5": "Päällä (nopeudet 1–5)"
         }
       }
     },

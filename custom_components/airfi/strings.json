@@ -374,29 +374,20 @@
       "force_control": {
         "name": "Force control",
         "state": {
-          "disabled": "Disabled",
-          "mode_1": "Mode 1",
-          "mode_2": "Mode 2",
-          "mode_3": "Mode 3"
+          "disabled": "Off",
+          "emergency_stop": "Emergency stop",
+          "away": "Away"
         }
       },
       "filter_change_interval": {
         "name": "Filter change interval",
         "state": {
-          "1_month": "1 month",
-          "2_months": "2 months",
-          "3_months": "3 months",
-          "4_months": "4 months",
-          "5_months": "5 months",
-          "6_months": "6 months"
-        }
-      },
-      "constant_pressure_state": {
-        "name": "Constant pressure mode",
-        "state": {
-          "off": "Off",
-          "supply_only": "Supply only",
-          "supply_and_exhaust": "Supply and extract"
+          "1_per_year": "Once a year",
+          "2_per_year": "2 times a year",
+          "3_per_year": "3 times a year",
+          "4_per_year": "4 times a year",
+          "5_per_year": "5 times a year",
+          "6_per_year": "6 times a year"
         }
       },
       "home_away": {
@@ -410,26 +401,34 @@
         "name": "Filter guard mode",
         "state": {
           "off": "Off",
-          "supply_only": "Supply only",
-          "supply_and_exhaust": "Supply and extract"
+          "on": "On",
+          "calibrate": "On + calibrate"
         }
       },
       "rh_sensor_mode": {
         "name": "Internal RH sensor mode",
         "state": {
-          "off": "Off",
-          "mode_1": "Mode 1",
-          "mode_2": "Mode 2"
+          "switch": "Switch mode",
+          "transmitter": "Transmitter mode",
+          "disabled": "Disabled"
         }
       },
       "boost_block": {
         "name": "Boost block",
         "state": {
-          "none": "None",
-          "block_1": "Block 1",
-          "block_2": "Block 2",
-          "block_3": "Block 3",
-          "block_4": "Block 4"
+          "off": "Off",
+          "humidity": "Humidity",
+          "co2": "CO2",
+          "humidity_co2": "Humidity and CO2",
+          "all": "All"
+        }
+      },
+      "bypass_mode": {
+        "name": "Bypass mode",
+        "state": {
+          "off": "Off",
+          "on_speeds_1_2": "On (speeds 1–2)",
+          "on_speeds_1_5": "On (speeds 1–5)"
         }
       }
     },
