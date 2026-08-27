@@ -79,6 +79,15 @@ Network** permission (System Settings → Privacy & Security → Local Network);
 without it the send fails with `No route to host`. The simulator keeps
 retrying and the Modbus server works regardless — or use `--no-announce`.
 
+## Branding
+
+`brands/airfi/` holds the integration icon (`icon.png` 256×256,
+`icon@2x.png` 512×512, from the Airfi app logo). Home Assistant loads
+integration icons from its central [brands repository](https://github.com/home-assistant/brands),
+not from the integration itself — to make the icon appear, submit these two
+files in a PR to that repo under `custom_integrations/airfi/`. Until that PR
+is merged, HA shows a generic placeholder.
+
 ## Development
 
 ```bash
