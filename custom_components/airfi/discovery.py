@@ -112,7 +112,9 @@ class AirfiDiscoveryListener:
 
 
 async def async_discover_devices(
-    timeout: float = DISCOVERY_TIMEOUT,
+    # Not a cancellation timeout: the listening duration is this function's
+    # whole job, and the name is part of the public API per the design spec.
+    timeout: float = DISCOVERY_TIMEOUT,  # noqa: ASYNC109
 ) -> list[DiscoveredDevice]:
     """Listen for *timeout* seconds and return unique devices found."""
     found: dict[int, DiscoveredDevice] = {}

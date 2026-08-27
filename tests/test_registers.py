@@ -1,6 +1,6 @@
 """Consistency tests for the register descriptor tables."""
 
-from custom_components.airfi.const import REG_HOLDING, REG_INPUT
+from custom_components.airfi.const import REG_INPUT
 from custom_components.airfi.registers import (
     BINARY_SENSOR_REGISTERS,
     NUMBER_REGISTERS,

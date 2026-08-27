@@ -17,7 +17,7 @@ from homeassistant.const import (
     UnitOfTime,
 )
 
-from .const import REG_HOLDING, REG_INPUT
+from .const import REG_INPUT
 
 # ---------------------------------------------------------------------------
 # Register definition dataclasses
