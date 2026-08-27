@@ -27,6 +27,7 @@ from .modbus import (
     AirfiModbusClient,
     AirfiModbusError,
 )
+from .registers import format_version
 
 type AirfiConfigEntry = ConfigEntry[AirfiCoordinator]
 
@@ -69,8 +70,8 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
             name=self.config_entry.title,
             manufacturer="Airfi",
             model=model_name(device_type) if device_type is not None else None,
-            hw_version=str(hw_version) if hw_version is not None else None,
-            sw_version=str(sw_version) if sw_version is not None else None,
+            hw_version=format_version(hw_version) if hw_version is not None else None,
+            sw_version=format_version(sw_version) if sw_version is not None else None,
             configuration_url=f"http://{self.config_entry.data[CONF_HOST]}",
         )
 

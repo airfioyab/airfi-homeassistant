@@ -69,3 +69,16 @@ async def test_unscaled_sensor(
     state = hass.states.get("sensor.model_60_l_12345678_supply_fan_rpm")
     assert state is not None
     assert state.state == "1450"
+
+
+async def test_version_sensor_decoded(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    await _setup(
+        hass, config_entry, mock_modbus_client, input_overrides={2: 214}
+    )
+    state = hass.states.get("sensor.model_60_l_12345678_software_version")
+    assert state is not None
+    assert state.state == "2.1.4"

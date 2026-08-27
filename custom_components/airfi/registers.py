@@ -32,9 +32,12 @@ class AirfiSensorRegister:
     register_type: str = REG_INPUT
     scale: float = 1.0
     signed: bool = False
+    # Firmware packs hw/sw versions into one register as
+    # major*100 + minor*10 + patch (see modbus-handler.cpp).
+    is_version: bool = False
     unit: str | None = None
     device_class: SensorDeviceClass | None = None
-    state_class: SensorStateClass = SensorStateClass.MEASUREMENT
+    state_class: SensorStateClass | None = SensorStateClass.MEASUREMENT
     entity_category: EntityCategory | None = None
     enabled_by_default: bool = True
     icon: str | None = None
@@ -106,17 +109,17 @@ SENSOR_REGISTERS: tuple[AirfiSensorRegister, ...] = (
     # --- Version info (diagnostic) ---
     AirfiSensorRegister(
         address=1, key="hardware_version",
-        unit=None, device_class=None, state_class=SensorStateClass.MEASUREMENT,
+        unit=None, device_class=None, state_class=None, is_version=True,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     AirfiSensorRegister(
         address=2, key="software_version",
-        unit=None, device_class=None, state_class=SensorStateClass.MEASUREMENT,
+        unit=None, device_class=None, state_class=None, is_version=True,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     AirfiSensorRegister(
         address=3, key="modbus_register_version",
-        unit=None, device_class=None, state_class=SensorStateClass.MEASUREMENT,
+        unit=None, device_class=None, state_class=None,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # --- Temperatures T1–T6 (scale 0.1 → tenths of °C) ---
@@ -781,3 +784,12 @@ def scaled_value(raw: int, scale: float, signed: bool = False) -> float | int:
     if scale == 1.0:
         return raw
     return round(raw * scale, 2)
+
+
+def format_version(raw: int) -> str:
+    """Decode a version register into "major.minor.patch".
+
+    The firmware encodes versions as major*100 + minor*10 + patch
+    (modbus-handler.cpp, input registers 1 and 2).
+    """
+    return f"{raw // 100}.{raw // 10 % 10}.{raw % 10}"

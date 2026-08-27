@@ -45,7 +45,7 @@ async def test_device_info(
 ) -> None:
     config_entry.add_to_hass(hass)
     mock_modbus_client.read_all.return_value = make_data(
-        input_overrides={1: 3, 2: 17}
+        input_overrides={1: 100, 2: 214}
     )
     coordinator = AirfiCoordinator(hass, config_entry)
     await coordinator.async_refresh()
@@ -53,8 +53,8 @@ async def test_device_info(
     assert info["identifiers"] == {(DOMAIN, config_entry.entry_id)}
     assert info["manufacturer"] == "Airfi"
     assert info["model"] == "Model 60 L"
-    assert info["hw_version"] == "3"
-    assert info["sw_version"] == "17"
+    assert info["hw_version"] == "1.0.0"
+    assert info["sw_version"] == "2.1.4"
 
 
 async def test_write_value_updates_cache_and_refreshes(

@@ -7,6 +7,7 @@ from custom_components.airfi.registers import (
     SELECT_REGISTERS,
     SENSOR_REGISTERS,
     SWITCH_REGISTERS,
+    format_version,
     scaled_value,
 )
 
@@ -58,3 +59,18 @@ def test_scaled_value() -> None:
     assert scaled_value(215, 0.1) == 21.5
     assert scaled_value(0xFFCE, 0.1, signed=True) == -5.0  # -50 raw
     assert scaled_value(3, 1.0) == 3
+
+
+def test_format_version() -> None:
+    """Firmware packs versions as major*100 + minor*10 + patch."""
+    assert format_version(123) == "1.2.3"
+    assert format_version(100) == "1.0.0"
+    assert format_version(3) == "0.0.3"
+    assert format_version(1205) == "12.0.5"
+
+
+def test_version_sensors_marked_and_not_statistics() -> None:
+    for address, is_version in ((1, True), (2, True), (3, False)):
+        desc = next(r for r in SENSOR_REGISTERS if r.address == address)
+        assert desc.is_version is is_version
+        assert desc.state_class is None
