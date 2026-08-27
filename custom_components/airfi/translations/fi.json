@@ -1,0 +1,475 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Lisää Airfi-laite",
+        "menu_options": {
+          "discover": "Etsi verkosta automaattisesti",
+          "manual": "Anna osoite manuaalisesti"
+        }
+      },
+      "select_device": {
+        "title": "Valitse laite",
+        "data": {
+          "device": "Löydetyt laitteet"
+        }
+      },
+      "manual": {
+        "title": "Manuaalinen yhteys",
+        "data": {
+          "host": "IP-osoite",
+          "port": "Portti"
+        }
+      }
+    },
+    "progress": {
+      "discovering": "Kuunnellaan Airfi-laitteita…"
+    },
+    "error": {
+      "cannot_connect": "Laitteeseen ei saada yhteyttä",
+      "modbus_error": "Laite hylkäsi Modbus-pyynnön"
+    },
+    "abort": {
+      "already_configured": "Tämä laite on jo määritetty"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Airfi-asetukset",
+        "data": {
+          "scan_interval": "Kyselyväli (sekuntia)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "hardware_version": {
+        "name": "Airfi-hw versio"
+      },
+      "software_version": {
+        "name": "Airfi-sw versio"
+      },
+      "modbus_register_version": {
+        "name": "Modbus-rekisteriversio"
+      },
+      "outdoor_air_temperature": {
+        "name": "Ulkoilman lämpötila (T1)"
+      },
+      "supply_air_temperature": {
+        "name": "Tuloilman lämpötila (T2)"
+      },
+      "exhaust_air_temperature": {
+        "name": "Poistoilman lämpötila (T3)"
+      },
+      "waste_air_temperature": {
+        "name": "Jäteilman lämpötila (T4)"
+      },
+      "supply_air_apartment_temperature": {
+        "name": "Tulo asuntoon lämpötila (T5)"
+      },
+      "freeze_protection_temperature": {
+        "name": "Jäätymissuojan lämpötila (T6)"
+      },
+      "exhaust_fan_speed": {
+        "name": "Poistopuhaltimen nopeus"
+      },
+      "supply_fan_speed": {
+        "name": "Tulopuhaltimen nopeus"
+      },
+      "supply_fan_rpm": {
+        "name": "Tulopuhaltimen RPM"
+      },
+      "exhaust_fan_rpm": {
+        "name": "Poistopuhaltimen RPM"
+      },
+      "fan_speed_output": {
+        "name": "Puhaltimen nopeus"
+      },
+      "humidity": {
+        "name": "Mitattu kosteuspitoisuus"
+      },
+      "force_control_state": {
+        "name": "Pakko-ohjaus"
+      },
+      "direct_control_percentage": {
+        "name": "Suoraohjaus 0–100 %"
+      },
+      "temperature_setpoint_readback": {
+        "name": "Lämpötilan asetuspiste (laite)"
+      },
+      "aux3_setpoint_readback": {
+        "name": "AUX3-asetuspiste (laite)"
+      },
+      "aux4_setpoint_readback": {
+        "name": "AUX4-asetuspiste (laite)"
+      },
+      "filter_change_interval_readback": {
+        "name": "Suodattimen vaihtoväli (laite)"
+      },
+      "aux3_mode": {
+        "name": "AUX3-tila"
+      },
+      "aux4_mode": {
+        "name": "AUX4-tila"
+      },
+      "aux3_read_value": {
+        "name": "AUX3 luettu arvo"
+      },
+      "aux4_read_value": {
+        "name": "AUX4 luettu arvo"
+      },
+      "aux2_state": {
+        "name": "AUX2-tila"
+      },
+      "intake_pressure": {
+        "name": "Tulopaine"
+      },
+      "exhaust_pressure": {
+        "name": "Poistopaine"
+      },
+      "range_hood_compensation": {
+        "name": "Liesikuvun kompensointi"
+      },
+      "s1_read_value": {
+        "name": "S1 luettu arvo"
+      },
+      "room_sensor": {
+        "name": "Huone-anturi"
+      },
+      "post_heat_valve": {
+        "name": "Jälkilämmitysventtiili"
+      },
+      "outlet_valve_control_status": {
+        "name": "Ulospuhallusventtiilin tila"
+      }
+    },
+    "binary_sensor": {
+      "fireplace_active": {
+        "name": "Takkatoiminto"
+      },
+      "home_away_state": {
+        "name": "Kotona/Poissa-tila"
+      },
+      "emergency_stop": {
+        "name": "Hätäseis-tila"
+      },
+      "freeze_alarm": {
+        "name": "Jäätymisvaarahälytys"
+      },
+      "machine_fault": {
+        "name": "Koneen vikatila"
+      },
+      "direct_control_active": {
+        "name": "Suoraohjaus päällä"
+      },
+      "constant_pressure_supply_alarm": {
+        "name": "Vakiopainesäätö tulo -hälytys"
+      },
+      "constant_pressure_exhaust_alarm": {
+        "name": "Vakiopainesäätö poisto -hälytys"
+      },
+      "filter_guard_alarm": {
+        "name": "Suodatinvahtihälytys"
+      },
+      "fire_alarm": {
+        "name": "Palohälytys"
+      },
+      "defrost_active": {
+        "name": "Sulatus päällä"
+      },
+      "aux1_status": {
+        "name": "AUX1-tila"
+      },
+      "bypass_active": {
+        "name": "Ohitus päällä"
+      },
+      "error_e0": {
+        "name": "Vika E0"
+      },
+      "error_e1": {
+        "name": "Vika E1"
+      },
+      "error_e2": {
+        "name": "Vika E2"
+      },
+      "error_e3": {
+        "name": "Vika E3"
+      },
+      "error_e4": {
+        "name": "Vika E4"
+      },
+      "error_e5": {
+        "name": "Vika E5"
+      },
+      "error_e6": {
+        "name": "Vika E6"
+      },
+      "error_e7": {
+        "name": "Vika E7"
+      },
+      "error_e8": {
+        "name": "Vika E8"
+      }
+    },
+    "number": {
+      "temperature_setpoint": {
+        "name": "Lämpötilan asetuspiste"
+      },
+      "away_temperature_setpoint": {
+        "name": "Lämpötilan asetuspiste, poissa"
+      },
+      "direct_control_percentage": {
+        "name": "Suoraohjaus 0–100 %"
+      },
+      "supply_fan_direct_control": {
+        "name": "Tulopuhaltimen suoraohjaus"
+      },
+      "exhaust_fan_direct_control": {
+        "name": "Poistopuhaltimen suoraohjaus"
+      },
+      "boost_time": {
+        "name": "Tehostuksen kesto"
+      },
+      "boost_speed_addition": {
+        "name": "Tehostuksen nopeuslisä"
+      },
+      "aux3_setpoint": {
+        "name": "AUX3-asetuspiste"
+      },
+      "aux4_setpoint": {
+        "name": "AUX4-asetuspiste"
+      },
+      "cp_supply_speed1_setpoint": {
+        "name": "VP tulo, nopeus 1 asetusarvo"
+      },
+      "cp_supply_speed2_setpoint": {
+        "name": "VP tulo, nopeus 2 asetusarvo"
+      },
+      "cp_supply_speed3_setpoint": {
+        "name": "VP tulo, nopeus 3 asetusarvo"
+      },
+      "cp_supply_speed4_setpoint": {
+        "name": "VP tulo, nopeus 4 asetusarvo"
+      },
+      "cp_supply_speed5_setpoint": {
+        "name": "VP tulo, nopeus 5 asetusarvo"
+      },
+      "cp_exhaust_speed1_setpoint": {
+        "name": "VP poisto, nopeus 1 asetusarvo"
+      },
+      "cp_exhaust_speed2_setpoint": {
+        "name": "VP poisto, nopeus 2 asetusarvo"
+      },
+      "cp_exhaust_speed3_setpoint": {
+        "name": "VP poisto, nopeus 3 asetusarvo"
+      },
+      "cp_exhaust_speed4_setpoint": {
+        "name": "VP poisto, nopeus 4 asetusarvo"
+      },
+      "cp_exhaust_speed5_setpoint": {
+        "name": "VP poisto, nopeus 5 asetusarvo"
+      },
+      "cp_deviation_setpoint": {
+        "name": "VP poikkeama-asetusarvo"
+      },
+      "filter_guard_supply_ref": {
+        "name": "Suodatinvahti tulo, referenssi"
+      },
+      "filter_guard_exhaust_ref": {
+        "name": "Suodatinvahti poisto, referenssi"
+      },
+      "transmitter_coefficient": {
+        "name": "Lähetintoiminnon ohjauskerroin"
+      },
+      "transmitter_deviation": {
+        "name": "Lähetintoiminnon poikkeama"
+      },
+      "fire_hazard_supply_temp_limit": {
+        "name": "Palovaara, tulo lämpöraja"
+      },
+      "fire_hazard_exhaust_temp_limit": {
+        "name": "Palovaara, poisto lämpöraja"
+      },
+      "post_ventilation_time": {
+        "name": "Jälkituuletusaika"
+      },
+      "supply_fan_speed1_pct": {
+        "name": "Tulopuhallin nopeus 1"
+      },
+      "supply_fan_speed2_pct": {
+        "name": "Tulopuhallin nopeus 2"
+      },
+      "supply_fan_speed3_pct": {
+        "name": "Tulopuhallin nopeus 3"
+      },
+      "supply_fan_speed4_pct": {
+        "name": "Tulopuhallin nopeus 4"
+      },
+      "supply_fan_speed5_pct": {
+        "name": "Tulopuhallin nopeus 5"
+      },
+      "exhaust_fan_speed1_pct": {
+        "name": "Poistopuhallin nopeus 1"
+      },
+      "exhaust_fan_speed2_pct": {
+        "name": "Poistopuhallin nopeus 2"
+      },
+      "exhaust_fan_speed3_pct": {
+        "name": "Poistopuhallin nopeus 3"
+      },
+      "exhaust_fan_speed4_pct": {
+        "name": "Poistopuhallin nopeus 4"
+      },
+      "exhaust_fan_speed5_pct": {
+        "name": "Poistopuhallin nopeus 5"
+      },
+      "supply_fan_correction": {
+        "name": "Tulopuhaltimen korjaus"
+      },
+      "bypass_set_temperature": {
+        "name": "Ohituksen asetuslämpötila"
+      },
+      "bypass_lower_limit": {
+        "name": "Ohituksen sallittu alaraja"
+      },
+      "bypass_delay": {
+        "name": "Ohituksen viive"
+      },
+      "supply_air_minimum_temperature": {
+        "name": "Tuloilman minimiasetus"
+      },
+      "cooling_temp_limit": {
+        "name": "Viilennyskäytön lämpötilaraja"
+      },
+      "pre_heating_temp_limit": {
+        "name": "Esilämmityksen lämpötilaraja"
+      },
+      "co2_setpoint": {
+        "name": "CO2-asetusarvo"
+      },
+      "modbus_rh_sensor": {
+        "name": "Modbus-kosteusanturi"
+      },
+      "modbus_co2_sensor": {
+        "name": "Modbus-CO2-anturi"
+      },
+      "modbus_temperature_sensor": {
+        "name": "Modbus-lämpötila-anturi"
+      }
+    },
+    "select": {
+      "speed": {
+        "name": "Nopeus",
+        "state": {
+          "off": "Pois",
+          "speed_1": "Nopeus 1",
+          "speed_2": "Nopeus 2",
+          "speed_3": "Nopeus 3",
+          "speed_4": "Nopeus 4",
+          "speed_5": "Nopeus 5"
+        }
+      },
+      "force_control": {
+        "name": "Pakko-ohjaus",
+        "state": {
+          "disabled": "Pois",
+          "mode_1": "Tila 1",
+          "mode_2": "Tila 2",
+          "mode_3": "Tila 3"
+        }
+      },
+      "filter_change_interval": {
+        "name": "Suodattimen vaihtoväli",
+        "state": {
+          "1_month": "1 kuukausi",
+          "2_months": "2 kuukautta",
+          "3_months": "3 kuukautta",
+          "4_months": "4 kuukautta",
+          "5_months": "5 kuukautta",
+          "6_months": "6 kuukautta"
+        }
+      },
+      "constant_pressure_state": {
+        "name": "Vakiopainesäätö",
+        "state": {
+          "off": "Pois",
+          "supply_only": "Vain tulo",
+          "supply_and_exhaust": "Tulo ja poisto"
+        }
+      },
+      "home_away": {
+        "name": "Kotona/poissa",
+        "state": {
+          "away": "Poissa",
+          "home": "Kotona"
+        }
+      },
+      "filter_guard_state": {
+        "name": "Suodatinvahdin tila",
+        "state": {
+          "off": "Pois",
+          "supply_only": "Vain tulo",
+          "supply_and_exhaust": "Tulo ja poisto"
+        }
+      },
+      "rh_sensor_mode": {
+        "name": "Sisäisen kosteusanturin tila",
+        "state": {
+          "off": "Pois",
+          "mode_1": "Tila 1",
+          "mode_2": "Tila 2"
+        }
+      },
+      "boost_block": {
+        "name": "Tehostuksen esto",
+        "state": {
+          "none": "Ei estoa",
+          "block_1": "Esto 1",
+          "block_2": "Esto 2",
+          "block_3": "Esto 3",
+          "block_4": "Esto 4"
+        }
+      }
+    },
+    "switch": {
+      "direct_control_enabled": {
+        "name": "Suoraohjaus käytössä"
+      },
+      "emergency_stop_resume": {
+        "name": "Hätäseis, manuaalinen kuittaus"
+      },
+      "buzzer_mute": {
+        "name": "Summerin sammutus"
+      },
+      "filter_change_reminder": {
+        "name": "Suodattimen vaihtomuistutus"
+      },
+      "separate_supply_fan_values": {
+        "name": "Erilliset tulopuhallinarvot"
+      },
+      "enhanced_cooling_allowed": {
+        "name": "Tehostettu viilennys sallittu"
+      },
+      "outdoor_valve_manual": {
+        "name": "Ulkoventtiilin käsiohjaus"
+      },
+      "sauna_mode": {
+        "name": "Sauna"
+      },
+      "fireplace_mode": {
+        "name": "Takka"
+      },
+      "heat_exchanger_disable": {
+        "name": "Roottorin pysäytys"
+      },
+      "internal_co2_enabled": {
+        "name": "Sisäinen CO2-anturi käytössä"
+      },
+      "aux1_control": {
+        "name": "AUX1-ohjaus"
+      }
+    }
+  }
+}

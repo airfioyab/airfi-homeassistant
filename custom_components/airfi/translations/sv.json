@@ -1,0 +1,475 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Lägg till Airfi-enhet",
+        "menu_options": {
+          "discover": "Sök nätverket automatiskt",
+          "manual": "Ange adress manuellt"
+        }
+      },
+      "select_device": {
+        "title": "Välj enhet",
+        "data": {
+          "device": "Hittade enheter"
+        }
+      },
+      "manual": {
+        "title": "Manuell anslutning",
+        "data": {
+          "host": "IP-adress",
+          "port": "Port"
+        }
+      }
+    },
+    "progress": {
+      "discovering": "Lyssnar efter Airfi-enheter…"
+    },
+    "error": {
+      "cannot_connect": "Det går inte att ansluta till enheten",
+      "modbus_error": "Enheten avvisade Modbus-begäran"
+    },
+    "abort": {
+      "already_configured": "Den här enheten är redan konfigurerad"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Airfi-alternativ",
+        "data": {
+          "scan_interval": "Pollningsintervall (sekunder)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "hardware_version": {
+        "name": "Hårdvaruversion"
+      },
+      "software_version": {
+        "name": "Mjukvaruversion"
+      },
+      "modbus_register_version": {
+        "name": "Modbus-registerversion"
+      },
+      "outdoor_air_temperature": {
+        "name": "Uteluftens temperatur (T1)"
+      },
+      "supply_air_temperature": {
+        "name": "Tilluftens temperatur (T2)"
+      },
+      "exhaust_air_temperature": {
+        "name": "Frånluftens temperatur (T3)"
+      },
+      "waste_air_temperature": {
+        "name": "Avluftens temperatur (T4)"
+      },
+      "supply_air_apartment_temperature": {
+        "name": "Tillluft till bostaden (T5)"
+      },
+      "freeze_protection_temperature": {
+        "name": "Frysskyddstemperatur (T6)"
+      },
+      "exhaust_fan_speed": {
+        "name": "Frånluftsfläktens hastighet"
+      },
+      "supply_fan_speed": {
+        "name": "Tilluftsfläktens hastighet"
+      },
+      "supply_fan_rpm": {
+        "name": "Tilluftsfläktens varvtal"
+      },
+      "exhaust_fan_rpm": {
+        "name": "Frånluftsfläktens varvtal"
+      },
+      "fan_speed_output": {
+        "name": "Fläkthastighet ut"
+      },
+      "humidity": {
+        "name": "Luftfuktighet"
+      },
+      "force_control_state": {
+        "name": "Tvångsstyrningens läge"
+      },
+      "direct_control_percentage": {
+        "name": "Direktstyrning"
+      },
+      "temperature_setpoint_readback": {
+        "name": "Temperaturbörvärde (enhet)"
+      },
+      "aux3_setpoint_readback": {
+        "name": "AUX3-börvärde (enhet)"
+      },
+      "aux4_setpoint_readback": {
+        "name": "AUX4-börvärde (enhet)"
+      },
+      "filter_change_interval_readback": {
+        "name": "Filterbytesintervall (enhet)"
+      },
+      "aux3_mode": {
+        "name": "AUX3-läge"
+      },
+      "aux4_mode": {
+        "name": "AUX4-läge"
+      },
+      "aux3_read_value": {
+        "name": "AUX3-värde"
+      },
+      "aux4_read_value": {
+        "name": "AUX4-värde"
+      },
+      "aux2_state": {
+        "name": "AUX2-läge"
+      },
+      "intake_pressure": {
+        "name": "Tilluftstryck"
+      },
+      "exhaust_pressure": {
+        "name": "Frånluftstryck"
+      },
+      "range_hood_compensation": {
+        "name": "Spiskåpskompensering"
+      },
+      "s1_read_value": {
+        "name": "S1-värde"
+      },
+      "room_sensor": {
+        "name": "Rumstemperatur"
+      },
+      "post_heat_valve": {
+        "name": "Eftervärmningsventil"
+      },
+      "outlet_valve_control_status": {
+        "name": "Utloppsventilens status"
+      }
+    },
+    "binary_sensor": {
+      "fireplace_active": {
+        "name": "Braskaminläge aktivt"
+      },
+      "home_away_state": {
+        "name": "Hemma"
+      },
+      "emergency_stop": {
+        "name": "Nödstopp"
+      },
+      "freeze_alarm": {
+        "name": "Frysrisklarm"
+      },
+      "machine_fault": {
+        "name": "Maskinfel"
+      },
+      "direct_control_active": {
+        "name": "Direktstyrning aktiv"
+      },
+      "constant_pressure_supply_alarm": {
+        "name": "Konstanttryck tilluft-larm"
+      },
+      "constant_pressure_exhaust_alarm": {
+        "name": "Konstanttryck frånluft-larm"
+      },
+      "filter_guard_alarm": {
+        "name": "Filtervaktslarm"
+      },
+      "fire_alarm": {
+        "name": "Brandlarm"
+      },
+      "defrost_active": {
+        "name": "Avfrostning aktiv"
+      },
+      "aux1_status": {
+        "name": "AUX1-status"
+      },
+      "bypass_active": {
+        "name": "Förbigång aktiv"
+      },
+      "error_e0": {
+        "name": "Fel E0"
+      },
+      "error_e1": {
+        "name": "Fel E1"
+      },
+      "error_e2": {
+        "name": "Fel E2"
+      },
+      "error_e3": {
+        "name": "Fel E3"
+      },
+      "error_e4": {
+        "name": "Fel E4"
+      },
+      "error_e5": {
+        "name": "Fel E5"
+      },
+      "error_e6": {
+        "name": "Fel E6"
+      },
+      "error_e7": {
+        "name": "Fel E7"
+      },
+      "error_e8": {
+        "name": "Fel E8"
+      }
+    },
+    "number": {
+      "temperature_setpoint": {
+        "name": "Temperaturbörvärde"
+      },
+      "away_temperature_setpoint": {
+        "name": "Temperaturbörvärde borta"
+      },
+      "direct_control_percentage": {
+        "name": "Direktstyrning"
+      },
+      "supply_fan_direct_control": {
+        "name": "Tilluftsfläkt direktstyrning"
+      },
+      "exhaust_fan_direct_control": {
+        "name": "Frånluftsfläkt direktstyrning"
+      },
+      "boost_time": {
+        "name": "Boost-tid"
+      },
+      "boost_speed_addition": {
+        "name": "Boost-hastighetstillägg"
+      },
+      "aux3_setpoint": {
+        "name": "AUX3-börvärde"
+      },
+      "aux4_setpoint": {
+        "name": "AUX4-börvärde"
+      },
+      "cp_supply_speed1_setpoint": {
+        "name": "Konstanttryck tilluft börvärde 1"
+      },
+      "cp_supply_speed2_setpoint": {
+        "name": "Konstanttryck tilluft börvärde 2"
+      },
+      "cp_supply_speed3_setpoint": {
+        "name": "Konstanttryck tilluft börvärde 3"
+      },
+      "cp_supply_speed4_setpoint": {
+        "name": "Konstanttryck tilluft börvärde 4"
+      },
+      "cp_supply_speed5_setpoint": {
+        "name": "Konstanttryck tilluft börvärde 5"
+      },
+      "cp_exhaust_speed1_setpoint": {
+        "name": "Konstanttryck frånluft börvärde 1"
+      },
+      "cp_exhaust_speed2_setpoint": {
+        "name": "Konstanttryck frånluft börvärde 2"
+      },
+      "cp_exhaust_speed3_setpoint": {
+        "name": "Konstanttryck frånluft börvärde 3"
+      },
+      "cp_exhaust_speed4_setpoint": {
+        "name": "Konstanttryck frånluft börvärde 4"
+      },
+      "cp_exhaust_speed5_setpoint": {
+        "name": "Konstanttryck frånluft börvärde 5"
+      },
+      "cp_deviation_setpoint": {
+        "name": "Konstanttrycksavvikelse"
+      },
+      "filter_guard_supply_ref": {
+        "name": "Filtervakt tilluft referens"
+      },
+      "filter_guard_exhaust_ref": {
+        "name": "Filtervakt frånluft referens"
+      },
+      "transmitter_coefficient": {
+        "name": "Sändarfunktionens koefficient"
+      },
+      "transmitter_deviation": {
+        "name": "Sändarfunktionens avvikelse"
+      },
+      "fire_hazard_supply_temp_limit": {
+        "name": "Brandrisk tilluft temperaturgräns"
+      },
+      "fire_hazard_exhaust_temp_limit": {
+        "name": "Brandrisk frånluft temperaturgräns"
+      },
+      "post_ventilation_time": {
+        "name": "Efterventilationstid"
+      },
+      "supply_fan_speed1_pct": {
+        "name": "Tilluftsfläkt hastighet 1"
+      },
+      "supply_fan_speed2_pct": {
+        "name": "Tilluftsfläkt hastighet 2"
+      },
+      "supply_fan_speed3_pct": {
+        "name": "Tilluftsfläkt hastighet 3"
+      },
+      "supply_fan_speed4_pct": {
+        "name": "Tilluftsfläkt hastighet 4"
+      },
+      "supply_fan_speed5_pct": {
+        "name": "Tilluftsfläkt hastighet 5"
+      },
+      "exhaust_fan_speed1_pct": {
+        "name": "Frånluftsfläkt hastighet 1"
+      },
+      "exhaust_fan_speed2_pct": {
+        "name": "Frånluftsfläkt hastighet 2"
+      },
+      "exhaust_fan_speed3_pct": {
+        "name": "Frånluftsfläkt hastighet 3"
+      },
+      "exhaust_fan_speed4_pct": {
+        "name": "Frånluftsfläkt hastighet 4"
+      },
+      "exhaust_fan_speed5_pct": {
+        "name": "Frånluftsfläkt hastighet 5"
+      },
+      "supply_fan_correction": {
+        "name": "Tilluftsfläktens korrigering"
+      },
+      "bypass_set_temperature": {
+        "name": "Förbigångens börtemperatur"
+      },
+      "bypass_lower_limit": {
+        "name": "Förbigångens nedre gräns"
+      },
+      "bypass_delay": {
+        "name": "Förbigångens fördröjning"
+      },
+      "supply_air_minimum_temperature": {
+        "name": "Tilluftens minimitemperatur"
+      },
+      "cooling_temp_limit": {
+        "name": "Kyldriftens temperaturgräns"
+      },
+      "pre_heating_temp_limit": {
+        "name": "Förvärmningens temperaturgräns"
+      },
+      "co2_setpoint": {
+        "name": "CO2-börvärde"
+      },
+      "modbus_rh_sensor": {
+        "name": "Extern fuktsensor (Modbus)"
+      },
+      "modbus_co2_sensor": {
+        "name": "Extern CO2-sensor (Modbus)"
+      },
+      "modbus_temperature_sensor": {
+        "name": "Extern temperatursensor (Modbus)"
+      }
+    },
+    "select": {
+      "speed": {
+        "name": "Fläkthastighet",
+        "state": {
+          "off": "Av",
+          "speed_1": "Hastighet 1",
+          "speed_2": "Hastighet 2",
+          "speed_3": "Hastighet 3",
+          "speed_4": "Hastighet 4",
+          "speed_5": "Hastighet 5"
+        }
+      },
+      "force_control": {
+        "name": "Tvångsstyrning",
+        "state": {
+          "disabled": "Av",
+          "mode_1": "Läge 1",
+          "mode_2": "Läge 2",
+          "mode_3": "Läge 3"
+        }
+      },
+      "filter_change_interval": {
+        "name": "Filterbytesintervall",
+        "state": {
+          "1_month": "1 månad",
+          "2_months": "2 månader",
+          "3_months": "3 månader",
+          "4_months": "4 månader",
+          "5_months": "5 månader",
+          "6_months": "6 månader"
+        }
+      },
+      "constant_pressure_state": {
+        "name": "Konstanttrycksläge",
+        "state": {
+          "off": "Av",
+          "supply_only": "Endast tilluft",
+          "supply_and_exhaust": "Tilluft och frånluft"
+        }
+      },
+      "home_away": {
+        "name": "Hemma/borta",
+        "state": {
+          "away": "Borta",
+          "home": "Hemma"
+        }
+      },
+      "filter_guard_state": {
+        "name": "Filtervaktsläge",
+        "state": {
+          "off": "Av",
+          "supply_only": "Endast tilluft",
+          "supply_and_exhaust": "Tilluft och frånluft"
+        }
+      },
+      "rh_sensor_mode": {
+        "name": "Internt fuktsensorläge",
+        "state": {
+          "off": "Av",
+          "mode_1": "Läge 1",
+          "mode_2": "Läge 2"
+        }
+      },
+      "boost_block": {
+        "name": "Boost-blockering",
+        "state": {
+          "none": "Ingen",
+          "block_1": "Blockering 1",
+          "block_2": "Blockering 2",
+          "block_3": "Blockering 3",
+          "block_4": "Blockering 4"
+        }
+      }
+    },
+    "switch": {
+      "direct_control_enabled": {
+        "name": "Direktstyrning aktiverad"
+      },
+      "emergency_stop_resume": {
+        "name": "Nödstopp manuell återställning"
+      },
+      "buzzer_mute": {
+        "name": "Summer avstängd"
+      },
+      "filter_change_reminder": {
+        "name": "Filterbytespåminnelse"
+      },
+      "separate_supply_fan_values": {
+        "name": "Separata tilluftsvärden"
+      },
+      "enhanced_cooling_allowed": {
+        "name": "Förstärkt kylning tillåten"
+      },
+      "outdoor_valve_manual": {
+        "name": "Uteventil manuellt läge"
+      },
+      "sauna_mode": {
+        "name": "Bastuläge"
+      },
+      "fireplace_mode": {
+        "name": "Braskaminläge"
+      },
+      "heat_exchanger_disable": {
+        "name": "Rotor avstängd"
+      },
+      "internal_co2_enabled": {
+        "name": "Intern CO2-sensor aktiverad"
+      },
+      "aux1_control": {
+        "name": "AUX1-styrning"
+      }
+    }
+  }
+}
