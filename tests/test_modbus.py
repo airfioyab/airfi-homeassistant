@@ -1,5 +1,6 @@
 """Tests for the Modbus client wrapper (pymodbus mocked)."""
 
+from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -19,7 +20,7 @@ def _read_result(values: list[int]) -> MagicMock:
 
 
 @pytest.fixture
-def mock_pymodbus() -> AsyncMock:
+def mock_pymodbus() -> Generator[AsyncMock]:
     with patch(
         "custom_components.airfi.modbus.AsyncModbusTcpClient", autospec=True
     ) as client_cls:
@@ -94,3 +95,32 @@ async def test_validation_read(mock_pymodbus: AsyncMock) -> None:
     client = AirfiModbusClient("1.2.3.4", 502)
     assert await client.read_input_register(1) == 7
     mock_pymodbus.read_input_registers.assert_awaited_once_with(address=0, count=1)
+
+
+async def test_connect_refused_closes_client(mock_pymodbus: AsyncMock) -> None:
+    mock_pymodbus.connect.return_value = False
+    client = AirfiModbusClient("1.2.3.4", 502)
+    with pytest.raises(AirfiConnectionError):
+        await client.read_all()
+    mock_pymodbus.close.assert_called()
+
+
+async def test_connect_raise_translated_and_closed(mock_pymodbus: AsyncMock) -> None:
+    mock_pymodbus.connect.side_effect = OSError("boom")
+    client = AirfiModbusClient("1.2.3.4", 502)
+    with pytest.raises(AirfiConnectionError):
+        await client.read_all()
+    mock_pymodbus.close.assert_called()
+
+
+def test_pymodbus_signatures() -> None:
+    """Guard against pymodbus API drift breaking our keyword calls."""
+    import inspect
+
+    from pymodbus.client import AsyncModbusTcpClient
+
+    for method in ("read_input_registers", "read_holding_registers"):
+        params = inspect.signature(getattr(AsyncModbusTcpClient, method)).parameters
+        assert "address" in params and "count" in params, method
+    params = inspect.signature(AsyncModbusTcpClient.write_register).parameters
+    assert "address" in params and "value" in params

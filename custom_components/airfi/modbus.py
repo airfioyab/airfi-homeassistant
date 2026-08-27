@@ -44,7 +44,15 @@ class AirfiModbusClient:
         )
 
     async def _connect(self) -> None:
-        if not await self._client.connect():
+        try:
+            connected = await self._client.connect()
+        except (OSError, TimeoutError, ModbusException) as err:
+            self._client.close()
+            raise AirfiConnectionError(
+                f"Cannot connect to Airfi device at {self._host}:{self._port}: {err}"
+            ) from err
+        if not connected:
+            self._client.close()
             raise AirfiConnectionError(
                 f"Cannot connect to Airfi device at {self._host}:{self._port}"
             )
