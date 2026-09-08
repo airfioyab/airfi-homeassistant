@@ -16,6 +16,7 @@ from .const import (
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    HOLDING_REGISTER_BATCHES,
     LOGGER,
     REG_HOLDING,
     REG_INPUT,
@@ -83,14 +84,31 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
             raise UpdateFailed(str(err)) from err
 
     async def async_write_value(self, address: int, raw_value: int) -> None:
-        """Write one holding register, update the cache, and refresh."""
+        """Write one holding register and confirm it from the device.
+
+        Only the holding batch containing the register is re-read (a full
+        read_all per write would cost 7 extra transactions); any knock-on
+        effects in other registers arrive with the next scheduled poll.
+        """
         try:
             await self.client.write_register(address, raw_value)
         except (AirfiConnectionError, AirfiModbusError) as err:
             raise HomeAssistantError(
                 f"Writing register {address} failed: {err}"
             ) from err
-        if self.data is not None:
-            self.data[REG_HOLDING][address] = raw_value
-            self.async_update_listeners()
-        await self.async_request_refresh()
+        if self.data is None:
+            await self.async_request_refresh()
+            return
+        self.data[REG_HOLDING][address] = raw_value
+        try:
+            for start, count in HOLDING_REGISTER_BATCHES:
+                if start <= address < start + count:
+                    self.data[REG_HOLDING].update(
+                        await self.client.read_holding_batch(start, count)
+                    )
+                    break
+        except (AirfiConnectionError, AirfiModbusError) as err:
+            # The write itself succeeded; keep the optimistic value and let
+            # the next scheduled poll reconcile.
+            LOGGER.debug("Post-write confirmation read failed: %s", err)
+        self.async_update_listeners()

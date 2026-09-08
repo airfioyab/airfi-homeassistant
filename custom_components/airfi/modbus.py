@@ -100,6 +100,19 @@ class AirfiModbusClient:
             finally:
                 self._client.close()
 
+    async def read_holding_batch(self, start: int, count: int) -> dict[int, int]:
+        """Read one holding-register batch (1-based start, count <= 20)."""
+        async with self._lock:
+            await self._connect()
+            try:
+                return await self._read_batch(
+                    self._client.read_holding_registers, start, count
+                )
+            except ModbusException as err:
+                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+            finally:
+                self._client.close()
+
     async def read_input_register(self, address: int) -> int:
         """Read a single input register (1-based); used for validation."""
         async with self._lock:
