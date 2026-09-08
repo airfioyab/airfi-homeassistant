@@ -34,3 +34,28 @@ async def test_setpoint_read_and_write(
         blocking=True,
     )
     mock_modbus_client.write_register.assert_awaited_with(5, 220)
+
+
+async def test_write_rounding_is_decimal_exact(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """Binary-float slop must not shift the written raw value (21.15 -> 212)."""
+    mock_modbus_client.read_all.return_value = make_data(
+        holding_overrides={5: 215}
+    )
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {
+            "entity_id": "number.model_60_l_12345678_temperature_setpoint",
+            "value": 21.15,
+        },
+        blocking=True,
+    )
+    mock_modbus_client.write_register.assert_awaited_with(5, 212)

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from decimal import ROUND_HALF_UP, Decimal
+
 from homeassistant.components.number import NumberEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -10,6 +12,20 @@ from .const import REG_HOLDING
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
 from .entity import AirfiEntity
 from .registers import NUMBER_REGISTERS, AirfiNumberRegister, scaled_value
+
+
+def _to_raw(value: float, scale: float) -> int:
+    """Convert a display value to a raw register value.
+
+    Uses decimal arithmetic so e.g. 21.15 / 0.1 becomes exactly 211.5
+    (half-up -> 212) instead of the binary-float 211.4999... that
+    round() would truncate to 211.
+    """
+    return int(
+        (Decimal(str(value)) / Decimal(str(scale))).to_integral_value(
+            rounding=ROUND_HALF_UP
+        )
+    )
 
 
 async def async_setup_entry(
@@ -58,8 +74,8 @@ class AirfiNumber(AirfiEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Convert to raw, clamp to the device's limits, and write."""
         desc = self._description
-        raw = round(value / desc.scale)
-        raw_min = round(desc.min_value / desc.scale)
-        raw_max = round(desc.max_value / desc.scale)
-        raw = max(raw_min, min(raw_max, raw))
+        raw = _to_raw(value, desc.scale)
+        raw = max(_to_raw(desc.min_value, desc.scale), min(
+            _to_raw(desc.max_value, desc.scale), raw
+        ))
         await self.coordinator.async_write_value(desc.address, raw)
