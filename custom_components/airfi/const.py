@@ -79,6 +79,8 @@ DEVICE_MODELS: dict[int, str] = {
     36: "Model 350 Ent R Electric",
     37: "Model 350 Ent L Water",
     38: "Model 350 Ent R Water",
+    39: "Model ReFit 10 L",
+    40: "Model ReFit 10 R",
 }
 
 
