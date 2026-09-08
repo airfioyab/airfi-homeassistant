@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
-from .entity import AirfiEntity
+from .entity import AirfiEntity, async_add_register_entities
 from .registers import BINARY_SENSOR_REGISTERS, AirfiBinarySensorRegister
 
 
@@ -17,10 +17,8 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up binary sensors for one Airfi device."""
-    coordinator = entry.runtime_data
-    async_add_entities(
-        AirfiBinarySensor(coordinator, description)
-        for description in BINARY_SENSOR_REGISTERS
+    async_add_register_entities(
+        entry, async_add_entities, AirfiBinarySensor, BINARY_SENSOR_REGISTERS
     )
 
 
@@ -31,13 +29,7 @@ class AirfiBinarySensor(AirfiEntity, BinarySensorEntity):
         self, coordinator: AirfiCoordinator, description: AirfiBinarySensorRegister
     ) -> None:
         """Initialize from a register descriptor."""
-        super().__init__(
-            coordinator,
-            description.key,
-            description.entity_category,
-            description.enabled_by_default,
-            description.icon,
-        )
+        super().__init__(coordinator, description)
         self._description = description
         self._attr_device_class = description.device_class
 

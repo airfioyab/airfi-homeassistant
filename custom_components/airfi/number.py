@@ -10,7 +10,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import REG_HOLDING
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
-from .entity import AirfiEntity
+from .entity import AirfiEntity, async_add_register_entities
 from .registers import NUMBER_REGISTERS, AirfiNumberRegister, scaled_value
 
 
@@ -34,9 +34,8 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up number entities for one Airfi device."""
-    coordinator = entry.runtime_data
-    async_add_entities(
-        AirfiNumber(coordinator, description) for description in NUMBER_REGISTERS
+    async_add_register_entities(
+        entry, async_add_entities, AirfiNumber, NUMBER_REGISTERS
     )
 
 
@@ -47,13 +46,7 @@ class AirfiNumber(AirfiEntity, NumberEntity):
         self, coordinator: AirfiCoordinator, description: AirfiNumberRegister
     ) -> None:
         """Initialize from a register descriptor."""
-        super().__init__(
-            coordinator,
-            description.key,
-            description.entity_category,
-            description.enabled_by_default,
-            description.icon,
-        )
+        super().__init__(coordinator, description)
         self._description = description
         self._attr_native_min_value = description.min_value
         self._attr_native_max_value = description.max_value

@@ -10,7 +10,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import REG_HOLDING
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
-from .entity import AirfiEntity
+from .entity import AirfiEntity, async_add_register_entities
 from .registers import SWITCH_REGISTERS, AirfiSwitchRegister
 
 
@@ -20,9 +20,8 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up switch entities for one Airfi device."""
-    coordinator = entry.runtime_data
-    async_add_entities(
-        AirfiSwitch(coordinator, description) for description in SWITCH_REGISTERS
+    async_add_register_entities(
+        entry, async_add_entities, AirfiSwitch, SWITCH_REGISTERS
     )
 
 
@@ -33,13 +32,7 @@ class AirfiSwitch(AirfiEntity, SwitchEntity):
         self, coordinator: AirfiCoordinator, description: AirfiSwitchRegister
     ) -> None:
         """Initialize from a register descriptor."""
-        super().__init__(
-            coordinator,
-            description.key,
-            description.entity_category,
-            description.enabled_by_default,
-            description.icon,
-        )
+        super().__init__(coordinator, description)
         self._description = description
         self._attr_device_class = description.device_class
 

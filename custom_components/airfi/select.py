@@ -8,7 +8,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import REG_HOLDING
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
-from .entity import AirfiEntity
+from .entity import AirfiEntity, async_add_register_entities
 from .registers import SELECT_REGISTERS, AirfiSelectRegister
 
 
@@ -18,9 +18,8 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up select entities for one Airfi device."""
-    coordinator = entry.runtime_data
-    async_add_entities(
-        AirfiSelect(coordinator, description) for description in SELECT_REGISTERS
+    async_add_register_entities(
+        entry, async_add_entities, AirfiSelect, SELECT_REGISTERS
     )
 
 
@@ -31,13 +30,7 @@ class AirfiSelect(AirfiEntity, SelectEntity):
         self, coordinator: AirfiCoordinator, description: AirfiSelectRegister
     ) -> None:
         """Initialize from a register descriptor."""
-        super().__init__(
-            coordinator,
-            description.key,
-            description.entity_category,
-            description.enabled_by_default,
-            description.icon,
-        )
+        super().__init__(coordinator, description)
         self._description = description
         self._raw_to_option = dict(description.options)
         self._option_to_raw = {opt: raw for raw, opt in description.options}

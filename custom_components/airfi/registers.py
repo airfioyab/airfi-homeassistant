@@ -23,12 +23,25 @@ from .const import REG_INPUT
 # Register definition dataclasses
 # ---------------------------------------------------------------------------
 
-@dataclass(frozen=True)
-class AirfiSensorRegister:
-    """Read-only sensor register."""
+@dataclass(frozen=True, kw_only=True)
+class AirfiRegisterDescription:
+    """Fields shared by every register descriptor.
+
+    AirfiEntity consumes this base directly, so common entity behavior
+    (naming, category, default enablement, icon) lives in one place.
+    """
 
     address: int
     key: str
+    entity_category: EntityCategory | None = None
+    enabled_by_default: bool = True
+    icon: str | None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class AirfiSensorRegister(AirfiRegisterDescription):
+    """Read-only sensor register."""
+
     register_type: str = REG_INPUT
     scale: float = 1.0
     signed: bool = False
@@ -38,17 +51,12 @@ class AirfiSensorRegister:
     unit: str | None = None
     device_class: SensorDeviceClass | None = None
     state_class: SensorStateClass | None = SensorStateClass.MEASUREMENT
-    entity_category: EntityCategory | None = None
-    enabled_by_default: bool = True
-    icon: str | None = None
 
 
-@dataclass(frozen=True)
-class AirfiBinarySensorRegister:
+@dataclass(frozen=True, kw_only=True)
+class AirfiBinarySensorRegister(AirfiRegisterDescription):
     """Read-only binary sensor register (or single bit within a register)."""
 
-    address: int
-    key: str
     register_type: str = REG_INPUT
     # If not None, this is bit N within the register (for bitmask registers).
     bit: int | None = None
@@ -56,17 +64,12 @@ class AirfiBinarySensorRegister:
     # entity's meaning (e.g. home/away: raw 0 = home = sensor on).
     inverted: bool = False
     device_class: BinarySensorDeviceClass | None = None
-    entity_category: EntityCategory | None = None
-    enabled_by_default: bool = True
-    icon: str | None = None
 
 
-@dataclass(frozen=True)
-class AirfiNumberRegister:
+@dataclass(frozen=True, kw_only=True)
+class AirfiNumberRegister(AirfiRegisterDescription):
     """Writable numeric register (holding)."""
 
-    address: int
-    key: str
     min_value: float
     max_value: float
     scale: float = 1.0
@@ -74,34 +77,21 @@ class AirfiNumberRegister:
     unit: str | None = None
     device_class: NumberDeviceClass | None = None
     mode: NumberMode = NumberMode.AUTO
-    entity_category: EntityCategory | None = None
-    enabled_by_default: bool = True
-    icon: str | None = None
 
 
-@dataclass(frozen=True)
-class AirfiSelectRegister:
+@dataclass(frozen=True, kw_only=True)
+class AirfiSelectRegister(AirfiRegisterDescription):
     """Writable select register (holding)."""
 
-    address: int
-    key: str
     # Ordered list of (raw_value, option_key) pairs.
     options: tuple[tuple[int, str], ...]
-    entity_category: EntityCategory | None = None
-    enabled_by_default: bool = True
-    icon: str | None = None
 
 
-@dataclass(frozen=True)
-class AirfiSwitchRegister:
+@dataclass(frozen=True, kw_only=True)
+class AirfiSwitchRegister(AirfiRegisterDescription):
     """Writable on/off register (holding, 0=off 1=on)."""
 
-    address: int
-    key: str
     device_class: SwitchDeviceClass | None = None
-    entity_category: EntityCategory | None = None
-    enabled_by_default: bool = True
-    icon: str | None = None
 
 
 # ---------------------------------------------------------------------------
