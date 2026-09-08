@@ -16,6 +16,7 @@ from .const import (
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    EXPECTED_MODBUS_REGISTER_VERSION,
     HOLDING_REGISTER_BATCHES,
     LOGGER,
     REG_HOLDING,
@@ -53,6 +54,7 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
         self.client = AirfiModbusClient(
             config_entry.data[CONF_HOST], config_entry.data[CONF_PORT]
         )
+        self._version_checked = False
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -79,9 +81,24 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
     async def _async_update_data(self) -> AirfiData:
         """Read all registers from the device."""
         try:
-            return await self.client.read_all()
+            data = await self.client.read_all()
         except (AirfiConnectionError, AirfiModbusError) as err:
             raise UpdateFailed(str(err)) from err
+        if not self._version_checked:
+            self._version_checked = True
+            reported = data[REG_INPUT].get(3)
+            if reported is not None and reported != EXPECTED_MODBUS_REGISTER_VERSION:
+                LOGGER.warning(
+                    (
+                        "Device %s reports Modbus register version %s; this "
+                        "integration was built against %s — some values may "
+                        "be mapped incorrectly"
+                    ),
+                    self.config_entry.title,
+                    reported,
+                    EXPECTED_MODBUS_REGISTER_VERSION,
+                )
+        return data
 
     async def async_write_value(self, address: int, raw_value: int) -> None:
         """Write one holding register and confirm it from the device.

@@ -17,6 +17,11 @@ CONF_DEVICE_TYPE = "device_type"
 
 # Modbus hardware constraints (see design spec).
 MAX_REGISTERS_PER_READ = 20
+
+# The register-layout version (input register 3, firmware MODBUS_VERSION)
+# this integration's register tables were built against. A different value
+# from the device is logged as a warning, not treated as fatal.
+EXPECTED_MODBUS_REGISTER_VERSION = 340
 MODBUS_TIMEOUT = 5
 
 # UDP multicast discovery. Packet: IP (u32), UDP port (u16), serial (u32),

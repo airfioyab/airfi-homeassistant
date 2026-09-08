@@ -88,3 +88,21 @@ async def test_write_failure_raises_homeassistant_error(
     mock_modbus_client.write_register.side_effect = AirfiConnectionError("nope")
     with pytest.raises(HomeAssistantError):
         await coordinator.async_write_value(5, 215)
+
+
+async def test_register_version_mismatch_warns_once(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """An unexpected register-layout version logs one warning, non-fatal."""
+    mock_modbus_client.read_all.return_value = make_data(
+        input_overrides={3: 999}
+    )
+    config_entry.add_to_hass(hass)
+    coordinator = AirfiCoordinator(hass, config_entry)
+    await coordinator.async_refresh()
+    await coordinator.async_refresh()
+    assert coordinator.last_update_success
+    assert caplog.text.count("Modbus register version 999") == 1
