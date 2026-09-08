@@ -740,7 +740,8 @@ SWITCH_REGISTERS: tuple[AirfiSwitchRegister, ...] = (
     ),
     AirfiSwitchRegister(
         address=27, key="emergency_stop_resume",
-        entity_category=EntityCategory.CONFIG,
+        # Can resume an emergency-stopped unit — installer level, opt-in.
+        entity_category=EntityCategory.CONFIG, enabled_by_default=False,
         icon="mdi:alert-circle-outline",
     ),
     AirfiSwitchRegister(

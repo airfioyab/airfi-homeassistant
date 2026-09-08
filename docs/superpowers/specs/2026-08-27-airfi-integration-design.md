@@ -94,8 +94,10 @@ registers get no unit and scale 1.
 - **Diagnostic category**: hw/sw/register versions, control readbacks, AUX values.
 - **Config category, disabled by default**: fan curve percentages, constant-pressure
   setpoints, filter guard references, fire hazard limits, transmitter settings,
-  bypass tuning, direct control, external Modbus sensor inputs, and other
-  installer-level registers.
+  bypass tuning, direct control, external Modbus sensor inputs, emergency-stop
+  resume, and other installer-level registers. Exceptions kept enabled because
+  they are homeowner-level conveniences despite the config category: filter
+  change interval, buzzer mute, and the filter change reminder toggle.
 
 ## Discovery and config flow
 
