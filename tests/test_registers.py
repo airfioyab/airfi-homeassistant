@@ -1,6 +1,10 @@
 """Consistency tests for the register descriptor tables."""
 
-from custom_components.airfi.const import REG_INPUT
+from custom_components.airfi.const import (
+    HOLDING_REGISTER_BATCHES,
+    INPUT_REGISTER_BATCHES,
+    REG_INPUT,
+)
 from custom_components.airfi.registers import (
     BINARY_SENSOR_REGISTERS,
     NUMBER_REGISTERS,
@@ -74,3 +78,28 @@ def test_version_sensors_marked_and_not_statistics() -> None:
         desc = next(r for r in SENSOR_REGISTERS if r.address == address)
         assert desc.is_version is is_version
         assert desc.state_class is None
+
+
+def test_every_descriptor_address_is_polled() -> None:
+    """The batch lists must cover every register the tables expose.
+
+    A register outside every batch is silently never fetched and its
+    entity stays unknown forever.
+    """
+    input_covered: set[int] = set()
+    for start, count in INPUT_REGISTER_BATCHES:
+        input_covered.update(range(start, start + count))
+    holding_covered: set[int] = set()
+    for start, count in HOLDING_REGISTER_BATCHES:
+        holding_covered.update(range(start, start + count))
+
+    input_addresses = {r.address for r in SENSOR_REGISTERS} | {
+        r.address for r in BINARY_SENSOR_REGISTERS
+    }
+    holding_addresses = (
+        {r.address for r in NUMBER_REGISTERS}
+        | {r.address for r in SELECT_REGISTERS}
+        | {r.address for r in SWITCH_REGISTERS}
+    )
+    assert input_addresses <= input_covered
+    assert holding_addresses <= holding_covered
