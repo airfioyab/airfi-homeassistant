@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from homeassistant.const import CONF_HOST, Platform
+from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later
 
-from .const import CONF_DEVICE_TYPE, CONF_SERIAL, DOMAIN, LOGGER
+from .const import CONF_DEVICE_TYPE, CONF_SERIAL, DEFAULT_PORT, DOMAIN, LOGGER
 from .coordinator import AirfiConfigEntry, AirfiCoordinator
 from .discovery import AirfiDiscoveryListener, DiscoveredDevice
 
@@ -52,17 +52,35 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirfiConfigEntry) -> bo
         for other in hass.config_entries.async_loaded_entries(DOMAIN)
         if other.entry_id != entry.entry_id
     ]
-    if not remaining and (data := hass.data.get(DOMAIN)):
-        # The slot may hold None while a start is still in flight; only a
-        # real listener needs stopping.
-        listener: AirfiDiscoveryListener | None = data.pop(
-            "discovery_listener", None
-        )
-        if listener is not None:
-            listener.stop()
-        if (cancel_retry := data.pop("discovery_retry", None)) is not None:
-            cancel_retry()
+    if not remaining:
+        _async_stop_discovery(hass)
     return unloaded
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: AirfiConfigEntry) -> None:
+    """Handle removal of a config entry.
+
+    HA skips async_unload_entry when a never-loaded entry (e.g. stuck in
+    SETUP_RETRY because the device was unreachable) is deleted, but always
+    calls this hook — without it the discovery listener started before the
+    failing first refresh would leak.
+    """
+    if not hass.config_entries.async_entries(DOMAIN):
+        _async_stop_discovery(hass)
+
+
+@callback
+def _async_stop_discovery(hass: HomeAssistant) -> None:
+    """Stop the shared listener and any pending retry."""
+    if (data := hass.data.get(DOMAIN)) is None:
+        return
+    # The slot may hold None while a start is still in flight; only a real
+    # listener needs stopping (the starter re-checks after its await).
+    listener: AirfiDiscoveryListener | None = data.pop("discovery_listener", None)
+    if listener is not None:
+        listener.stop()
+    if (cancel_retry := data.pop("discovery_retry", None)) is not None:
+        cancel_retry()
 
 
 async def _async_ensure_discovery_listener(hass: HomeAssistant) -> None:
@@ -85,6 +103,14 @@ async def _async_ensure_discovery_listener(hass: HomeAssistant) -> None:
         data.pop("discovery_listener", None)
         LOGGER.warning("Rediscovery listener could not start: %s", err)
         _async_schedule_discovery_retry(hass)
+        return
+    # The last entry may have unloaded or been removed (popping our reserved
+    # slot) while the start was in flight — a listener stored now would never
+    # be stopped. Loaded-state cannot be checked here: during the first
+    # entry's setup the listener intentionally starts before the entry is
+    # LOADED, so the popped slot is the only reliable signal.
+    if "discovery_listener" not in data:
+        listener.stop()
         return
     data["discovery_listener"] = listener
     # A retry may still be pending if this start was itself a retry attempt
@@ -130,10 +156,13 @@ def _async_handle_announcement(hass: HomeAssistant, device: DiscoveredDevice) ->
                     entry, data={**entry.data, CONF_HOST: device.ip}
                 )
             return
-    # No serial match: upgrade a manual entry for this host.
+    # No serial match: upgrade a manual entry for this host. Announcing
+    # devices always serve Modbus on the default port, so a manual entry on
+    # another port is a different endpoint and must not adopt this identity.
     for entry in hass.config_entries.async_entries(DOMAIN):
         if (
             entry.data.get(CONF_HOST) == device.ip
+            and entry.data.get(CONF_PORT, DEFAULT_PORT) == DEFAULT_PORT
             and entry.data.get(CONF_SERIAL) is None
         ):
             LOGGER.info(
