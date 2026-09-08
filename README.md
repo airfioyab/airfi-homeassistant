@@ -24,12 +24,16 @@ devices on the network via the units' UDP multicast announcements
 
 ### HACS
 
-The integration is not yet in the HACS default store. Once this repository
-has a public home you can add it in HACS as a *custom repository*
-(type: Integration) and install it from there.
+The integration is not (yet) in the HACS default store, but can be installed
+as a custom repository:
 
-> The `codeowners` field in `manifest.json`, and an issue tracker link, will
-> be filled in when the repository gets its public home.
+1. In HACS, open the three-dot menu (top right) → **Custom repositories**.
+2. Add `https://github.com/airfioyab/airfi-homeassistant` with type
+   **Integration**.
+3. Search for **Airfi** in HACS and download it.
+4. Restart Home Assistant.
+
+HACS will also notify you of new releases of the integration.
 
 ## Configuration
 
@@ -78,15 +82,6 @@ On macOS, multicast announcements require the terminal app to have **Local
 Network** permission (System Settings → Privacy & Security → Local Network);
 without it the send fails with `No route to host`. The simulator keeps
 retrying and the Modbus server works regardless — or use `--no-announce`.
-
-## Branding
-
-`custom_components/airfi/brand/` holds the integration icon (`icon.png`
-256×256, `icon@2x.png` 512×512, from the Airfi app logo). Home Assistant
-2026.3 and newer serves brand images bundled in the integration directory
-directly, taking priority over the central brands CDN — no submission to
-the [brands repository](https://github.com/home-assistant/brands) is needed
-(though one would make the icon visible on older HA versions too).
 
 ## Development
 
