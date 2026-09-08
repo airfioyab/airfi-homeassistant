@@ -229,3 +229,32 @@ async def test_options_flow(
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert config_entry.options[CONF_SCAN_INTERVAL] == 60
+
+
+async def test_discovery_excludes_host_on_nondefault_port(
+    hass: HomeAssistant,
+) -> None:
+    """A device configured via any port on its host is not offered again."""
+    MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="192.168.1.50:1502",
+        data={"host": "192.168.1.50", "port": 1502},
+    ).add_to_hass(hass)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "user"}
+    )
+    with patch(
+        "custom_components.airfi.config_flow.async_discover_devices",
+        AsyncMock(side_effect=_discover_soon),
+    ):
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {"next_step_id": "discover"}
+        )
+        while result["type"] is FlowResultType.SHOW_PROGRESS:
+            await hass.async_block_till_done()
+            result = await hass.config_entries.flow.async_configure(
+                result["flow_id"]
+            )
+    # Only device is on an already-configured host -> falls through to manual.
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "manual"

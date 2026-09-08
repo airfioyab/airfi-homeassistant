@@ -99,15 +99,18 @@ class AirfiConfigFlow(ConfigFlow, domain=DOMAIN):
             devices = []
 
         known_ids = self._async_current_ids(include_ignore=True)
-        known_endpoints = {
-            (entry.data.get(CONF_HOST), entry.data.get(CONF_PORT))
+        # Exclude by host regardless of configured port: a device reachable
+        # through a non-default port (NAT/port-forward, simulator) is still
+        # the same device, and offering it again would create a duplicate
+        # entry fighting over the single-client Modbus socket.
+        known_hosts = {
+            entry.data.get(CONF_HOST)
             for entry in self._async_current_entries(include_ignore=True)
         }
         self._devices = {
             str(dev.serial): dev
             for dev in devices
-            if str(dev.serial) not in known_ids
-            and (dev.ip, DEFAULT_PORT) not in known_endpoints
+            if str(dev.serial) not in known_ids and dev.ip not in known_hosts
         }
         if not self._devices:
             return self.async_show_progress_done(next_step_id="manual")
