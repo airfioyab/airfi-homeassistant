@@ -5,6 +5,8 @@ units. It talks to the unit locally over Modbus TCP (no cloud) and finds
 devices on the network via the units' UDP multicast announcements
 (`239.255.100.200:3000`).
 
+The integration provides access to the Modbus registers documented here: https://airfi.fi/dokumentit/modbus-rekisterikartta/.
+
 ## Requirements
 
 - Home Assistant 2025.x or newer (Python 3.13 based).
@@ -64,9 +66,11 @@ Entities come in two tiers:
   and commissioning settings exposed by the unit's holding registers. Enable
   them per entity if you need them; changing them affects how the unit runs.
 
-## Device simulator
+## Development
 
-`tools/simulator.py` emulates a unit for development without hardware:
+### Device simulator
+
+The script `tools/simulator.py` emulates a unit for development without hardware:
 multicast announcements plus a Modbus TCP server with realistic quirks
 (max 20 registers per read, a single TCP client at a time).
 
@@ -83,7 +87,7 @@ Network** permission (System Settings → Privacy & Security → Local Network);
 without it the send fails with `No route to host`. The simulator keeps
 retrying and the Modbus server works regardless — or use `--no-announce`.
 
-## Development
+### Tests and linting
 
 ```bash
 uv sync                                      # install dependencies
