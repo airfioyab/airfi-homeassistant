@@ -106,3 +106,39 @@ async def test_register_version_mismatch_warns_once(
     await coordinator.async_refresh()
     assert coordinator.last_update_success
     assert caplog.text.count("Modbus register version 999") == 1
+
+
+async def test_input_extension_gated_by_register_version(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """Registers 50-52 are read only when the firmware version has them."""
+    mock_modbus_client.read_all.return_value = make_data(
+        input_overrides={3: 360}
+    )
+    mock_modbus_client.read_input_batch.return_value = {50: 650, 51: 120, 52: 115}
+    config_entry.add_to_hass(hass)
+    coordinator = AirfiCoordinator(hass, config_entry)
+    await coordinator.async_refresh()
+    mock_modbus_client.read_input_batch.assert_awaited_once_with(50, 3)
+    assert coordinator.data["input"][51] == 120
+    # Subsequent polls pass the extension straight into read_all.
+    await coordinator.async_refresh()
+    mock_modbus_client.read_all.assert_awaited_with((50, 3))
+
+
+async def test_no_input_extension_on_old_firmware(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    mock_modbus_client.read_all.return_value = make_data(
+        input_overrides={3: 330}
+    )
+    config_entry.add_to_hass(hass)
+    coordinator = AirfiCoordinator(hass, config_entry)
+    await coordinator.async_refresh()
+    mock_modbus_client.read_input_batch.assert_not_awaited()
+    await coordinator.async_refresh()
+    mock_modbus_client.read_all.assert_awaited_with(None)

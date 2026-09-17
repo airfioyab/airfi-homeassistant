@@ -143,6 +143,15 @@
       },
       "outlet_valve_control_status": {
         "name": "Ulospuhallusventtiilin tila"
+      },
+      "co2": {
+        "name": "CO2-pitoisuus"
+      },
+      "cp_supply_measured_pressure": {
+        "name": "Vakiopaine, tulon mitattu paine"
+      },
+      "cp_exhaust_measured_pressure": {
+        "name": "Vakiopaine, poiston mitattu paine"
       }
     },
     "binary_sensor": {

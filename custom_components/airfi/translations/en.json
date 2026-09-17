@@ -143,6 +143,15 @@
       },
       "outlet_valve_control_status": {
         "name": "Outlet valve control status"
+      },
+      "co2": {
+        "name": "CO2 concentration"
+      },
+      "cp_supply_measured_pressure": {
+        "name": "Constant pressure supply (measured)"
+      },
+      "cp_exhaust_measured_pressure": {
+        "name": "Constant pressure extract (measured)"
       }
     },
     "binary_sensor": {

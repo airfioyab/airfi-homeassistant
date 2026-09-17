@@ -18,6 +18,7 @@ from .const import (
     DOMAIN,
     EXPECTED_MODBUS_REGISTER_VERSION,
     HOLDING_REGISTER_BATCHES,
+    INPUT_EXTENSION_BATCHES,
     LOGGER,
     REG_HOLDING,
     REG_INPUT,
@@ -55,6 +56,9 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
             config_entry.data[CONF_HOST], config_entry.data[CONF_PORT]
         )
         self._version_checked = False
+        # Chosen after the first read based on the device's reported
+        # register version; None until then (and for old firmware).
+        self._input_extension: tuple[int, int] | None = None
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -81,7 +85,7 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
     async def _async_update_data(self) -> AirfiData:
         """Read all registers from the device."""
         try:
-            data = await self.client.read_all()
+            data = await self.client.read_all(self._input_extension)
         except (AirfiConnectionError, AirfiModbusError) as err:
             raise UpdateFailed(str(err)) from err
         if not self._version_checked:
@@ -98,6 +102,20 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
                     reported,
                     EXPECTED_MODBUS_REGISTER_VERSION,
                 )
+            # Registers beyond 49 exist only on newer register versions;
+            # reading them on older firmware would fail the whole batch.
+            if reported is not None:
+                for min_version, batch in INPUT_EXTENSION_BATCHES:
+                    if reported >= min_version:
+                        self._input_extension = batch
+                        break
+            if self._input_extension is not None:
+                try:
+                    data[REG_INPUT].update(
+                        await self.client.read_input_batch(*self._input_extension)
+                    )
+                except (AirfiConnectionError, AirfiModbusError) as err:
+                    LOGGER.debug("Extension batch read failed: %s", err)
         return data
 
     async def async_write_value(self, address: int, raw_value: int) -> None:

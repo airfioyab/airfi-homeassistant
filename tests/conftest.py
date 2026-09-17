@@ -54,6 +54,7 @@ def mock_modbus_client() -> Generator[AsyncMock]:
         client.read_all = AsyncMock(return_value=make_data())
         client.write_register = AsyncMock()
         client.read_holding_batch = AsyncMock(return_value={})
+        client.read_input_batch = AsyncMock(return_value={})
         client.read_input_register = AsyncMock(return_value=1)
         yield client
 

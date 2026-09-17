@@ -21,7 +21,7 @@ MAX_REGISTERS_PER_READ = 20
 # The register-layout version (input register 3, firmware MODBUS_VERSION)
 # this integration's register tables were built against. A different value
 # from the device is logged as a warning, not treated as fatal.
-EXPECTED_MODBUS_REGISTER_VERSION = 340
+EXPECTED_MODBUS_REGISTER_VERSION = 360
 MODBUS_TIMEOUT = 5
 
 # UDP multicast discovery. Packet: IP (u32), UDP port (u16), serial (u32),
@@ -36,7 +36,18 @@ REG_INPUT = "input"
 REG_HOLDING = "holding"
 
 # (start, count) batches, 1-based, each within the 20-register device limit.
+# The base input batches work on every firmware; registers beyond 49 exist
+# only from certain register versions on and are read as a gated extension
+# (a batch touching a register unknown to the firmware fails whole).
 INPUT_REGISTER_BATCHES: list[tuple[int, int]] = [(1, 20), (21, 20), (41, 9)]
+
+# (minimum register version, extension batch) — newest first; the first
+# entry whose version the device reaches is used.
+# >= 350: 50 CO2 + 51/52 measured constant-pressure values; >= 340: 50 only.
+INPUT_EXTENSION_BATCHES: list[tuple[int, tuple[int, int]]] = [
+    (350, (50, 3)),
+    (340, (50, 1)),
+]
 HOLDING_REGISTER_BATCHES: list[tuple[int, int]] = [
     (1, 20),
     (21, 20),

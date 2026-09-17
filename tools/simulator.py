@@ -32,12 +32,12 @@ class RegisterStore:
     """Register values, keyed by 1-based address."""
 
     def __init__(self) -> None:
-        self.input_registers: dict[int, int] = dict.fromkeys(range(1, 50), 0)
+        self.input_registers: dict[int, int] = dict.fromkeys(range(1, 53), 0)
         self.holding_registers: dict[int, int] = dict.fromkeys(range(1, 69), 0)
         # Plausible defaults so HA shows something sensible.
         self.input_registers.update(
-            {1: 100, 2: 214, 3: 340, 4: 52, 5: 215, 6: 221, 7: 68, 21: 1450, 22: 1390,
-             23: 45}
+            {1: 100, 2: 214, 3: 360, 4: 52, 5: 215, 6: 221, 7: 68, 21: 1450, 22: 1390,
+             23: 45, 50: 650, 51: 120, 52: 115}
         )
         self.holding_registers.update({1: 3, 5: 215, 8: 3, 12: 0})
 

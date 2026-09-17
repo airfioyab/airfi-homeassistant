@@ -13,6 +13,7 @@ from homeassistant.const import (
     REVOLUTIONS_PER_MINUTE,
     EntityCategory,
     UnitOfPressure,
+    UnitOfRatio,
     UnitOfTemperature,
     UnitOfTime,
 )
@@ -266,6 +267,24 @@ SENSOR_REGISTERS: tuple[AirfiSensorRegister, ...] = (
     AirfiSensorRegister(
         address=43, key="post_heat_valve",
         unit=PERCENTAGE, icon="mdi:valve",
+    ),
+    # --- Register-version-gated extension (>= 340 / >= 350) ---
+    AirfiSensorRegister(
+        # Optional I2C sensor; the firmware reports 0 when none is fitted.
+        address=50, key="co2",
+        unit=UnitOfRatio.PARTS_PER_MILLION, device_class=SensorDeviceClass.CO2,
+        enabled_by_default=False,
+    ),
+    AirfiSensorRegister(
+        # Only meaningful on constant-pressure installations.
+        address=51, key="cp_supply_measured_pressure",
+        unit=UnitOfPressure.PA, device_class=SensorDeviceClass.PRESSURE,
+        enabled_by_default=False,
+    ),
+    AirfiSensorRegister(
+        address=52, key="cp_exhaust_measured_pressure",
+        unit=UnitOfPressure.PA, device_class=SensorDeviceClass.PRESSURE,
+        enabled_by_default=False,
     ),
     AirfiSensorRegister(
         address=48, key="outlet_valve_control_status",

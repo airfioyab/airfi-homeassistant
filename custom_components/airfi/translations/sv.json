@@ -143,6 +143,15 @@
       },
       "outlet_valve_control_status": {
         "name": "Utloppsventilens status"
+      },
+      "co2": {
+        "name": "CO2-halt"
+      },
+      "cp_supply_measured_pressure": {
+        "name": "Konstanttryck tilluft (uppmätt)"
+      },
+      "cp_exhaust_measured_pressure": {
+        "name": "Konstanttryck frånluft (uppmätt)"
       }
     },
     "binary_sensor": {

@@ -76,13 +76,18 @@ class AirfiModbusClient:
             )
         return {start + i: value for i, value in enumerate(result.registers)}
 
-    async def read_all(self) -> AirfiData:
-        """Read every defined input and holding register."""
+    async def read_all(
+        self, extra_input_batch: tuple[int, int] | None = None
+    ) -> AirfiData:
+        """Read every defined register, plus an optional extension batch."""
         async with self._lock:
             await self._connect()
             try:
                 data: AirfiData = {REG_INPUT: {}, REG_HOLDING: {}}
-                for start, count in INPUT_REGISTER_BATCHES:
+                input_batches = list(INPUT_REGISTER_BATCHES)
+                if extra_input_batch is not None:
+                    input_batches.append(extra_input_batch)
+                for start, count in input_batches:
                     data[REG_INPUT].update(
                         await self._read_batch(
                             self._client.read_input_registers, start, count
@@ -107,6 +112,19 @@ class AirfiModbusClient:
             try:
                 return await self._read_batch(
                     self._client.read_holding_registers, start, count
+                )
+            except ModbusException as err:
+                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+            finally:
+                self._client.close()
+
+    async def read_input_batch(self, start: int, count: int) -> dict[int, int]:
+        """Read one input-register batch (1-based start, count <= 20)."""
+        async with self._lock:
+            await self._connect()
+            try:
+                return await self._read_batch(
+                    self._client.read_input_registers, start, count
                 )
             except ModbusException as err:
                 raise AirfiModbusError(f"Modbus communication error: {err}") from err

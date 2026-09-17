@@ -2,6 +2,7 @@
 
 from custom_components.airfi.const import (
     HOLDING_REGISTER_BATCHES,
+    INPUT_EXTENSION_BATCHES,
     INPUT_REGISTER_BATCHES,
     REG_INPUT,
 )
@@ -23,7 +24,7 @@ def test_input_register_coverage() -> None:
     addresses |= {
         r.address for r in BINARY_SENSOR_REGISTERS if r.register_type == REG_INPUT
     }
-    assert addresses == set(range(1, 50)) - {10, 20}
+    assert addresses == set(range(1, 53)) - {10, 20}
 
 
 def test_holding_register_coverage() -> None:
@@ -90,6 +91,8 @@ def test_every_descriptor_address_is_polled() -> None:
     """
     input_covered: set[int] = set()
     for start, count in INPUT_REGISTER_BATCHES:
+        input_covered.update(range(start, start + count))
+    for _min_version, (start, count) in INPUT_EXTENSION_BATCHES:
         input_covered.update(range(start, start + count))
     holding_covered: set[int] = set()
     for start, count in HOLDING_REGISTER_BATCHES:
