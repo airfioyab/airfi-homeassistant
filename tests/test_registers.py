@@ -7,6 +7,7 @@ from custom_components.airfi.const import (
 )
 from custom_components.airfi.registers import (
     BINARY_SENSOR_REGISTERS,
+    BUTTON_REGISTERS,
     NUMBER_REGISTERS,
     SELECT_REGISTERS,
     SENSOR_REGISTERS,
@@ -30,7 +31,8 @@ def test_holding_register_coverage() -> None:
     numbers = [r.address for r in NUMBER_REGISTERS]
     selects = [r.address for r in SELECT_REGISTERS]
     switches = [r.address for r in SWITCH_REGISTERS]
-    combined = numbers + selects + switches
+    buttons = [r.address for r in BUTTON_REGISTERS]
+    combined = numbers + selects + switches + buttons
     assert sorted(combined) == list(range(1, 69))
 
 
@@ -100,6 +102,7 @@ def test_every_descriptor_address_is_polled() -> None:
         {r.address for r in NUMBER_REGISTERS}
         | {r.address for r in SELECT_REGISTERS}
         | {r.address for r in SWITCH_REGISTERS}
+        | {r.address for r in BUTTON_REGISTERS}
     )
     assert input_addresses <= input_covered
     assert holding_addresses <= holding_covered

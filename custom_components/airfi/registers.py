@@ -17,7 +17,7 @@ from homeassistant.const import (
     UnitOfTime,
 )
 
-from .const import REG_INPUT
+from .const import REG_HOLDING, REG_INPUT
 
 # ---------------------------------------------------------------------------
 # Register definition dataclasses
@@ -92,6 +92,13 @@ class AirfiSwitchRegister(AirfiRegisterDescription):
     """Writable on/off register (holding, 0=off 1=on)."""
 
     device_class: SwitchDeviceClass | None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class AirfiButtonRegister(AirfiRegisterDescription):
+    """Write-only action register (holding): pressing writes press_value."""
+
+    press_value: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -309,6 +316,14 @@ BINARY_SENSOR_REGISTERS: tuple[AirfiBinarySensorRegister, ...] = (
         address=36, key="constant_pressure_exhaust_alarm",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    AirfiBinarySensorRegister(
+        # Holding register 34 reads v646: 1 = filter needs changing. It is
+        # not writable as a toggle (the firmware only accepts 0 = reset,
+        # exposed as a separate button entity).
+        address=34, key="filter_change_due", register_type=REG_HOLDING,
+        device_class=BinarySensorDeviceClass.PROBLEM,
+        icon="mdi:air-filter",
     ),
     AirfiBinarySensorRegister(
         address=37, key="filter_guard_alarm",
@@ -740,11 +755,6 @@ SWITCH_REGISTERS: tuple[AirfiSwitchRegister, ...] = (
         icon="mdi:bell-off-outline",
     ),
     AirfiSwitchRegister(
-        address=34, key="filter_change_reminder",
-        entity_category=EntityCategory.CONFIG,
-        icon="mdi:air-filter",
-    ),
-    AirfiSwitchRegister(
         address=45, key="separate_supply_fan_values",
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
     ),
@@ -779,6 +789,16 @@ SWITCH_REGISTERS: tuple[AirfiSwitchRegister, ...] = (
     AirfiSwitchRegister(
         address=65, key="aux1_control",
         entity_category=EntityCategory.CONFIG, enabled_by_default=False,
+    ),
+)
+
+
+BUTTON_REGISTERS: tuple[AirfiButtonRegister, ...] = (
+    AirfiButtonRegister(
+        # Firmware (modbus-handler.cpp case 34) accepts only 0: acknowledge
+        # and clear the filter change reminder.
+        address=34, key="filter_reminder_reset", press_value=0,
+        icon="mdi:air-filter",
     ),
 )
 

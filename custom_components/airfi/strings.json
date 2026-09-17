@@ -211,6 +211,9 @@
       },
       "error_e8": {
         "name": "Error E8"
+      },
+      "filter_change_due": {
+        "name": "Filter change due"
       }
     },
     "number": {
@@ -442,9 +445,6 @@
       "buzzer_mute": {
         "name": "Buzzer mute"
       },
-      "filter_change_reminder": {
-        "name": "Filter change reminder"
-      },
       "separate_supply_fan_values": {
         "name": "Separate supply fan values"
       },
@@ -468,6 +468,11 @@
       },
       "aux1_control": {
         "name": "AUX1 control"
+      }
+    },
+    "button": {
+      "filter_reminder_reset": {
+        "name": "Reset filter change reminder"
       }
     }
   }

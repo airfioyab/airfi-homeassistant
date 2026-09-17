@@ -7,6 +7,7 @@ import pytest
 
 from custom_components.airfi.registers import (
     BINARY_SENSOR_REGISTERS,
+    BUTTON_REGISTERS,
     NUMBER_REGISTERS,
     SELECT_REGISTERS,
     SENSOR_REGISTERS,
@@ -21,6 +22,7 @@ PLATFORM_TABLES = {
     "number": NUMBER_REGISTERS,
     "select": SELECT_REGISTERS,
     "switch": SWITCH_REGISTERS,
+    "button": BUTTON_REGISTERS,
 }
 
 

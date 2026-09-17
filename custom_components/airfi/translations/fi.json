@@ -211,6 +211,9 @@
       },
       "error_e8": {
         "name": "Vika E8"
+      },
+      "filter_change_due": {
+        "name": "Suodattimen vaihtomuistutus"
       }
     },
     "number": {
@@ -442,9 +445,6 @@
       "buzzer_mute": {
         "name": "Summerin sammutus"
       },
-      "filter_change_reminder": {
-        "name": "Suodattimen vaihtomuistutus"
-      },
       "separate_supply_fan_values": {
         "name": "Erilliset tulopuhallinarvot"
       },
@@ -468,6 +468,11 @@
       },
       "aux1_control": {
         "name": "AUX1-ohjaus"
+      }
+    },
+    "button": {
+      "filter_reminder_reset": {
+        "name": "Kuittaa suodattimen vaihtomuistutus"
       }
     }
   }
