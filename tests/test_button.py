@@ -26,6 +26,7 @@ async def test_filter_reminder_state_and_reset(
     )
     assert state is not None
     assert state.state == "on"
+    assert "device_class" not in state.attributes
 
     await hass.services.async_call(
         "button",

@@ -321,8 +321,9 @@ BINARY_SENSOR_REGISTERS: tuple[AirfiBinarySensorRegister, ...] = (
         # Holding register 34 reads v646: 1 = filter needs changing. It is
         # not writable as a toggle (the firmware only accepts 0 = reset,
         # exposed as a separate button entity).
+        # Deliberately no device class: a due filter change is routine
+        # maintenance, not a fault (unlike filter_guard_alarm).
         address=34, key="filter_change_due", register_type=REG_HOLDING,
-        device_class=BinarySensorDeviceClass.PROBLEM,
         icon="mdi:air-filter",
     ),
     AirfiBinarySensorRegister(
