@@ -13,7 +13,6 @@ from homeassistant.const import (
     REVOLUTIONS_PER_MINUTE,
     EntityCategory,
     UnitOfPressure,
-    UnitOfRatio,
     UnitOfTemperature,
     UnitOfTime,
 )
@@ -272,7 +271,9 @@ SENSOR_REGISTERS: tuple[AirfiSensorRegister, ...] = (
     AirfiSensorRegister(
         # Optional I2C sensor; the firmware reports 0 when none is fitted.
         address=50, key="co2",
-        unit=UnitOfRatio.PARTS_PER_MILLION, device_class=SensorDeviceClass.CO2,
+        # Plain string: UnitOfRatio is too new for older HA cores and
+        # CONCENTRATION_PARTS_PER_MILLION is deprecated in newer ones.
+        unit="ppm", device_class=SensorDeviceClass.CO2,
         enabled_by_default=False,
     ),
     AirfiSensorRegister(
