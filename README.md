@@ -53,7 +53,10 @@ If a configured unit changes IP (DHCP), the integration picks up the new
 address automatically from the announcements.
 
 **Options** (per entry): polling interval in seconds (default 30,
-range 5–3600).
+range 5–3600) and the Modbus device ID (default 1, range 1–247 — some
+installations set it to e.g. a flat number; the unit ignores requests
+addressed to any other ID). The device ID can also be set during manual
+setup.
 
 ## Entities
 
