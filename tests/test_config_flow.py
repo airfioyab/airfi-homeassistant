@@ -165,7 +165,7 @@ async def test_manual_flow_same_host_different_port_not_aborted(
             result["flow_id"], {"host": "10.0.0.9", "port": 5021}
         )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["data"] == {"host": "10.0.0.9", "port": 5021}
+    assert result["data"] == {"host": "10.0.0.9", "port": 5021, "modbus_id": 1}
 
 
 async def test_manual_flow(
@@ -188,7 +188,7 @@ async def test_manual_flow(
         )
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["title"] == "Airfi 10.0.0.9"
-    assert result["data"] == {"host": "10.0.0.9", "port": 502}
+    assert result["data"] == {"host": "10.0.0.9", "port": 502, "modbus_id": 1}
     assert result["result"].unique_id == "10.0.0.9:502"
 
 

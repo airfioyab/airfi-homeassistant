@@ -18,13 +18,17 @@ from homeassistant.helpers import selector
 
 from .const import (
     CONF_DEVICE_TYPE,
+    CONF_MODBUS_ID,
     CONF_SCAN_INTERVAL,
     CONF_SERIAL,
+    DEFAULT_MODBUS_ID,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
+    MAX_MODBUS_ID,
     MAX_SCAN_INTERVAL,
+    MIN_MODBUS_ID,
     MIN_SCAN_INTERVAL,
 )
 from .discovery import DiscoveredDevice, async_discover_devices
@@ -39,17 +43,32 @@ _PORT_SELECTOR = vol.All(
     vol.Coerce(int),
 )
 
+_MODBUS_ID_SELECTOR = vol.All(
+    selector.NumberSelector(
+        selector.NumberSelectorConfig(
+            min=MIN_MODBUS_ID,
+            max=MAX_MODBUS_ID,
+            step=1,
+            mode=selector.NumberSelectorMode.BOX,
+        )
+    ),
+    vol.Coerce(int),
+)
+
 STEP_MANUAL_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): selector.TextSelector(),
         vol.Optional(CONF_PORT, default=DEFAULT_PORT): _PORT_SELECTOR,
+        vol.Optional(CONF_MODBUS_ID, default=DEFAULT_MODBUS_ID): _MODBUS_ID_SELECTOR,
     }
 )
 
 
-async def _validate_connection(host: str, port: int) -> str | None:
+async def _validate_connection(
+    host: str, port: int, modbus_id: int = DEFAULT_MODBUS_ID
+) -> str | None:
     """Try reading input register 1; return an error key or None."""
-    client = AirfiModbusClient(host, port)
+    client = AirfiModbusClient(host, port, modbus_id)
     try:
         await client.read_input_register(1)
     except AirfiConnectionError:
@@ -160,14 +179,19 @@ class AirfiConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             host: str = user_input[CONF_HOST].strip()
             port: int = user_input.get(CONF_PORT, DEFAULT_PORT)
+            modbus_id: int = user_input.get(CONF_MODBUS_ID, DEFAULT_MODBUS_ID)
             self._async_abort_entries_match({CONF_HOST: host, CONF_PORT: port})
             await self.async_set_unique_id(f"{host}:{port}")
             self._abort_if_unique_id_configured()
-            error = await _validate_connection(host, port)
+            error = await _validate_connection(host, port, modbus_id)
             if error is None:
                 return self.async_create_entry(
                     title=f"Airfi {host}",
-                    data={CONF_HOST: host, CONF_PORT: port},
+                    data={
+                        CONF_HOST: host,
+                        CONF_PORT: port,
+                        CONF_MODBUS_ID: modbus_id,
+                    },
                 )
             errors["base"] = error
         return self.async_show_form(
@@ -193,6 +217,10 @@ class AirfiOptionsFlow(OptionsFlow):
         current: int = self.config_entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
         )
+        current_modbus_id: int = self.config_entry.options.get(
+            CONF_MODBUS_ID,
+            self.config_entry.data.get(CONF_MODBUS_ID, DEFAULT_MODBUS_ID),
+        )
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
@@ -207,7 +235,10 @@ class AirfiOptionsFlow(OptionsFlow):
                             )
                         ),
                         vol.Coerce(int),
-                    )
+                    ),
+                    vol.Optional(
+                        CONF_MODBUS_ID, default=current_modbus_id
+                    ): _MODBUS_ID_SELECTOR,
                 }
             ),
         )

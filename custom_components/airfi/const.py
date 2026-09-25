@@ -12,6 +12,12 @@ DEFAULT_SCAN_INTERVAL = 30
 MIN_SCAN_INTERVAL = 5
 MAX_SCAN_INTERVAL = 3600
 CONF_SCAN_INTERVAL = "scan_interval"
+# Modbus unit/device id. The firmware drops frames addressed to any other id
+# (except 0), and installations sometimes set it to e.g. a flat number.
+CONF_MODBUS_ID = "modbus_id"
+DEFAULT_MODBUS_ID = 1
+MIN_MODBUS_ID = 1
+MAX_MODBUS_ID = 247
 CONF_SERIAL = "serial"
 CONF_DEVICE_TYPE = "device_type"
 

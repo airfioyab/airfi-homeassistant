@@ -13,7 +13,9 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_DEVICE_TYPE,
+    CONF_MODBUS_ID,
     CONF_SCAN_INTERVAL,
+    DEFAULT_MODBUS_ID,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     EXPECTED_MODBUS_REGISTER_VERSION,
@@ -52,8 +54,14 @@ class AirfiCoordinator(DataUpdateCoordinator[AirfiData]):
             name=f"Airfi {config_entry.data[CONF_HOST]}",
             update_interval=timedelta(seconds=scan_interval),
         )
+        device_id: int = config_entry.options.get(
+            CONF_MODBUS_ID,
+            config_entry.data.get(CONF_MODBUS_ID, DEFAULT_MODBUS_ID),
+        )
         self.client = AirfiModbusClient(
-            config_entry.data[CONF_HOST], config_entry.data[CONF_PORT]
+            config_entry.data[CONF_HOST],
+            config_entry.data[CONF_PORT],
+            device_id,
         )
         self._version_checked = False
         # Chosen after the first read based on the device's reported

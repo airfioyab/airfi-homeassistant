@@ -18,7 +18,11 @@
         "title": "Manuaalinen yhteys",
         "data": {
           "host": "IP-osoite",
-          "port": "Portti"
+          "port": "Portti",
+          "modbus_id": "Modbus-laitetunnus"
+        },
+        "data_description": {
+          "modbus_id": "Yleensä 1; joissakin asennuksissa esim. asunnon numero."
         }
       }
     },
@@ -38,7 +42,8 @@
       "init": {
         "title": "Airfi-asetukset",
         "data": {
-          "scan_interval": "Kyselyväli (sekuntia)"
+          "scan_interval": "Kyselyväli (sekuntia)",
+          "modbus_id": "Modbus-laitetunnus"
         }
       }
     }

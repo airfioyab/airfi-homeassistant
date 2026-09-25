@@ -18,7 +18,11 @@
         "title": "Manuell anslutning",
         "data": {
           "host": "IP-adress",
-          "port": "Port"
+          "port": "Port",
+          "modbus_id": "Modbus-enhets-ID"
+        },
+        "data_description": {
+          "modbus_id": "Vanligen 1; vissa installationer använder t.ex. lägenhetsnummer."
         }
       }
     },
@@ -38,7 +42,8 @@
       "init": {
         "title": "Airfi-alternativ",
         "data": {
-          "scan_interval": "Pollningsintervall (sekunder)"
+          "scan_interval": "Pollningsintervall (sekunder)",
+          "modbus_id": "Modbus-enhets-ID"
         }
       }
     }

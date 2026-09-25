@@ -14,6 +14,7 @@ from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 
 from .const import (
+    DEFAULT_MODBUS_ID,
     HOLDING_REGISTER_BATCHES,
     INPUT_REGISTER_BATCHES,
     MODBUS_TIMEOUT,
@@ -35,9 +36,12 @@ class AirfiModbusError(Exception):
 class AirfiModbusClient:
     """Connects per operation; serializes all access with a lock."""
 
-    def __init__(self, host: str, port: int) -> None:
+    def __init__(
+        self, host: str, port: int, device_id: int = DEFAULT_MODBUS_ID
+    ) -> None:
         self._host = host
         self._port = port
+        self._device_id = device_id
         self._lock = asyncio.Lock()
         self._client = AsyncModbusTcpClient(
             host=host, port=port, timeout=MODBUS_TIMEOUT
@@ -69,7 +73,9 @@ class AirfiModbusClient:
         address IS the 1-based register number (verified against
         modbus-handler.cpp; address 0 is rejected as IllegalDataAddress).
         """
-        result = await read(address=start, count=count)
+        result = await read(
+            address=start, count=count, device_id=self._device_id
+        )
         if result.isError():
             raise AirfiModbusError(
                 f"Modbus error reading registers {start}-{start + count - 1}: {result}"
@@ -151,7 +157,7 @@ class AirfiModbusClient:
             await self._connect()
             try:
                 result = await self._client.write_register(
-                    address=address, value=value
+                    address=address, value=value, device_id=self._device_id
                 )
                 if result.isError():
                     raise AirfiModbusError(

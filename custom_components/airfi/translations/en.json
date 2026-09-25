@@ -18,7 +18,11 @@
         "title": "Manual connection",
         "data": {
           "host": "IP address",
-          "port": "Port"
+          "port": "Port",
+          "modbus_id": "Modbus device ID"
+        },
+        "data_description": {
+          "modbus_id": "Usually 1; some installations set it to e.g. a flat number."
         }
       }
     },
@@ -38,7 +42,8 @@
       "init": {
         "title": "Airfi options",
         "data": {
-          "scan_interval": "Polling interval (seconds)"
+          "scan_interval": "Polling interval (seconds)",
+          "modbus_id": "Modbus device ID"
         }
       }
     }
