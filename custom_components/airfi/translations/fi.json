@@ -46,6 +46,10 @@
           "modbus_id": "Modbus-laitetunnus"
         }
       }
+    },
+    "error": {
+      "no_response": "Laite ei vastannut — tarkista Modbus-laitetunnus.",
+      "cannot_connect": "Laitteeseen ei saada yhteyttä"
     }
   },
   "entity": {

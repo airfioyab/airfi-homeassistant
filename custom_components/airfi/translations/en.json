@@ -46,6 +46,10 @@
           "modbus_id": "Modbus device ID"
         }
       }
+    },
+    "error": {
+      "no_response": "The device did not answer — check the Modbus device ID.",
+      "cannot_connect": "Cannot connect to the device"
     }
   },
   "entity": {

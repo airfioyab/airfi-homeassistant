@@ -11,7 +11,7 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from pymodbus.client import AsyncModbusTcpClient
-from pymodbus.exceptions import ModbusException
+from pymodbus.exceptions import ModbusException, ModbusIOException
 
 from .const import (
     DEFAULT_MODBUS_ID,
@@ -31,6 +31,17 @@ class AirfiConnectionError(Exception):
 
 class AirfiModbusError(Exception):
     """The device rejected a request or the transfer failed."""
+
+
+def _comm_error(err: ModbusException) -> AirfiModbusError:
+    """Wrap a pymodbus error, hinting at the usual cause of silence."""
+    message = f"Modbus communication error: {err}"
+    if isinstance(err, ModbusIOException):
+        message += (
+            " (connected but no response — this often means a wrong"
+            " Modbus device ID)"
+        )
+    return AirfiModbusError(message)
 
 
 class AirfiModbusClient:
@@ -66,6 +77,7 @@ class AirfiModbusClient:
         read: Callable[..., Awaitable[Any]],
         start: int,
         count: int,
+        device_id: int | None = None,
     ) -> dict[int, int]:
         """Read one batch; returns {1-based address: raw value}.
 
@@ -74,7 +86,9 @@ class AirfiModbusClient:
         modbus-handler.cpp; address 0 is rejected as IllegalDataAddress).
         """
         result = await read(
-            address=start, count=count, device_id=self._device_id
+            address=start,
+            count=count,
+            device_id=self._device_id if device_id is None else device_id,
         )
         if result.isError():
             raise AirfiModbusError(
@@ -107,7 +121,7 @@ class AirfiModbusClient:
                     )
                 return data
             except ModbusException as err:
-                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+                raise _comm_error(err) from err
             finally:
                 self._client.close()
 
@@ -120,7 +134,7 @@ class AirfiModbusClient:
                     self._client.read_holding_registers, start, count
                 )
             except ModbusException as err:
-                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+                raise _comm_error(err) from err
             finally:
                 self._client.close()
 
@@ -133,21 +147,28 @@ class AirfiModbusClient:
                     self._client.read_input_registers, start, count
                 )
             except ModbusException as err:
-                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+                raise _comm_error(err) from err
             finally:
                 self._client.close()
 
-    async def read_input_register(self, address: int) -> int:
-        """Read a single input register (1-based); used for validation."""
+    async def read_input_register(
+        self, address: int, device_id: int | None = None
+    ) -> int:
+        """Read a single input register (1-based); used for validation.
+
+        A device_id override lets the options flow probe a new Modbus id
+        through this client's lock, so the check cannot collide with an
+        in-flight poll on the single-client device.
+        """
         async with self._lock:
             await self._connect()
             try:
                 batch = await self._read_batch(
-                    self._client.read_input_registers, address, 1
+                    self._client.read_input_registers, address, 1, device_id
                 )
                 return batch[address]
             except ModbusException as err:
-                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+                raise _comm_error(err) from err
             finally:
                 self._client.close()
 
@@ -165,6 +186,6 @@ class AirfiModbusClient:
                         f"{result}"
                     )
             except ModbusException as err:
-                raise AirfiModbusError(f"Modbus communication error: {err}") from err
+                raise _comm_error(err) from err
             finally:
                 self._client.close()

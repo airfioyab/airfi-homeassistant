@@ -36,13 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: AirfiConfigEntry) -> boo
     entry.runtime_data = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True
-
-
-async def _async_options_updated(hass: HomeAssistant, entry: AirfiConfigEntry) -> None:
-    """Reload the entry when options (scan interval) change."""
-    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: AirfiConfigEntry) -> bool:
@@ -151,11 +145,10 @@ def _async_handle_announcement(hass: HomeAssistant, device: DiscoveredDevice) ->
                 LOGGER.info(
                     "Airfi %s moved to %s; updating", serial_id, device.ip
                 )
-                # async_update_entry fires the entry's update listeners, which
-                # reload the entry; no explicit reload is needed here.
                 hass.config_entries.async_update_entry(
                     entry, data={**entry.data, CONF_HOST: device.ip}
                 )
+                hass.config_entries.async_schedule_reload(entry.entry_id)
             return
     # No serial match: upgrade a manual entry for this host. Announcing
     # devices always serve Modbus on the default port, so a manual entry on
@@ -178,4 +171,5 @@ def _async_handle_announcement(hass: HomeAssistant, device: DiscoveredDevice) ->
                     CONF_DEVICE_TYPE: device.device_type,
                 },
             )
+            hass.config_entries.async_schedule_reload(entry.entry_id)
             return

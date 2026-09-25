@@ -8,9 +8,10 @@ from typing import Any
 import voluptuous as vol
 from homeassistant.config_entries import (
     ConfigEntry,
+    ConfigEntryState,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import callback
@@ -205,21 +206,33 @@ class AirfiConfigFlow(ConfigFlow, domain=DOMAIN):
         return AirfiOptionsFlow()
 
 
-class AirfiOptionsFlow(OptionsFlow):
-    """Scan interval option."""
+class AirfiOptionsFlow(OptionsFlowWithReload):
+    """Scan interval and Modbus device id; reloads the entry on save.
+
+    OptionsFlowWithReload applies changes immediately even when the entry
+    is stuck in setup-retry (a plain update listener would only be
+    registered after a successful setup).
+    """
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Manage options."""
-        if user_input is not None:
-            return self.async_create_entry(data=user_input)
-        current: int = self.config_entry.options.get(
-            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-        )
+        errors: dict[str, str] = {}
         current_modbus_id: int = self.config_entry.options.get(
             CONF_MODBUS_ID,
             self.config_entry.data.get(CONF_MODBUS_ID, DEFAULT_MODBUS_ID),
+        )
+        if user_input is not None:
+            new_modbus_id: int = user_input.get(CONF_MODBUS_ID, DEFAULT_MODBUS_ID)
+            if new_modbus_id != current_modbus_id:
+                error = await self._async_validate_modbus_id(new_modbus_id)
+                if error is not None:
+                    errors["base"] = error
+            if not errors:
+                return self.async_create_entry(data=user_input)
+        current: int = self.config_entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
         )
         return self.async_show_form(
             step_id="init",
@@ -241,4 +254,27 @@ class AirfiOptionsFlow(OptionsFlow):
                     ): _MODBUS_ID_SELECTOR,
                 }
             ),
+            errors=errors,
         )
+
+    async def _async_validate_modbus_id(self, modbus_id: int) -> str | None:
+        """Probe the device with a changed Modbus id before saving it."""
+        entry = self.config_entry
+        try:
+            if entry.state is ConfigEntryState.LOADED:
+                # Use the running coordinator's client so the probe
+                # serializes behind the same lock as polling (the device
+                # allows only one Modbus client).
+                await entry.runtime_data.client.read_input_register(
+                    1, device_id=modbus_id
+                )
+            else:
+                client = AirfiModbusClient(
+                    entry.data[CONF_HOST], entry.data[CONF_PORT], modbus_id
+                )
+                await client.read_input_register(1)
+        except AirfiConnectionError:
+            return "cannot_connect"
+        except AirfiModbusError:
+            return "no_response"
+        return None

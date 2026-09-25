@@ -46,6 +46,10 @@
           "modbus_id": "Modbus-enhets-ID"
         }
       }
+    },
+    "error": {
+      "no_response": "Enheten svarade inte — kontrollera Modbus-enhets-ID.",
+      "cannot_connect": "Det går inte att ansluta till enheten"
     }
   },
   "entity": {

@@ -89,6 +89,11 @@ class AirfiDiscoveryListener:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         try:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # On macOS/BSD, sharing a multicast port with other listeners
+            # also needs SO_REUSEPORT (e.g. the Airfi config tool, or a
+            # config-flow discovery running alongside).
+            if hasattr(socket, "SO_REUSEPORT"):
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
             sock.bind(("", MULTICAST_PORT))
             mreq = struct.pack(
                 "4sL", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY

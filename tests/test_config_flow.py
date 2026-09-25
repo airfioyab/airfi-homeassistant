@@ -258,3 +258,46 @@ async def test_discovery_excludes_host_on_nondefault_port(
     # Only device is on an already-configured host -> falls through to manual.
     assert result["type"] is FlowResultType.FORM
     assert result["step_id"] == "manual"
+
+
+async def test_options_flow_validates_changed_modbus_id(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """A changed Modbus id is probed through the coordinator's client."""
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    result = await hass.config_entries.options.async_init(config_entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_SCAN_INTERVAL: 30, "modbus_id": 5}
+    )
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    mock_modbus_client.read_input_register.assert_awaited_with(1, device_id=5)
+    assert config_entry.options["modbus_id"] == 5
+
+
+async def test_options_flow_rejects_silent_modbus_id(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    mock_modbus_client: AsyncMock,
+) -> None:
+    """A probe that gets no answer keeps the old id and shows an error."""
+    from custom_components.airfi.modbus import AirfiModbusError
+
+    config_entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    mock_modbus_client.read_input_register.side_effect = AirfiModbusError(
+        "no response"
+    )
+    result = await hass.config_entries.options.async_init(config_entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_SCAN_INTERVAL: 30, "modbus_id": 9}
+    )
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "no_response"}
+    assert "modbus_id" not in config_entry.options
